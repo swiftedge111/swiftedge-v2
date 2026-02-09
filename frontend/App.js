@@ -84,8 +84,12 @@ themeToggle.addEventListener('click', () => {
 // Update current section indicator
 function updateCurrentSection(sectionName) {
     const currentSection = document.querySelector('.current-section');
+    if (!currentSection) return;
+    
     const currentText = currentSection.querySelector('.current-text');
     const currentIcon = currentSection.querySelector('.current-icon');
+    
+    if (!currentText || !currentIcon) return;
     
     // Map section names to icons
     const iconMap = {
@@ -1514,75 +1518,105 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Update summary modal
-    document.getElementById('summary-amount').textContent = formatter.format(amount);
-    document.getElementById('summary-method').textContent = isCrypto 
+    const summaryAmount = document.getElementById('summary-amount');
+    const summaryMethod = document.getElementById('summary-method');
+    const summaryInfo = document.getElementById('summary-info');
+    const summaryFee = document.getElementById('summary-fee');
+    const summaryTotal = document.getElementById('summary-total');
+    
+    if (summaryAmount) summaryAmount.textContent = formatter.format(amount);
+    if (summaryMethod) summaryMethod.textContent = isCrypto 
       ? `Crypto (${withdrawalData['crypto-type']})` 
       : 'Bank Transfer';
-      
-    document.getElementById('summary-info').textContent = isCrypto
+    if (summaryInfo) summaryInfo.textContent = isCrypto
       ? withdrawalData['crypto-wallet']
       : `${withdrawalData['bank-name']} - ${withdrawalData['account-number']}`;
-      
-    document.getElementById('summary-fee').textContent = formatter.format(fee);
-    document.getElementById('summary-total').textContent = formatter.format(total);
+    if (summaryFee) summaryFee.textContent = formatter.format(fee);
+    if (summaryTotal) summaryTotal.textContent = formatter.format(total);
     
     // Store withdrawal data for later use
-    document.getElementById('transaction-summary-modal').dataset.withdrawalData = JSON.stringify({
-      ...withdrawalData,
-      amount: amount,
-      fee: fee,
-      total: total
-    });
-    
-    // Show summary modal
-    document.getElementById('transaction-summary-modal').style.display = 'flex';
+    const summaryModal = document.getElementById('transaction-summary-modal');
+    if (summaryModal) {
+      summaryModal.dataset.withdrawalData = JSON.stringify({
+        ...withdrawalData,
+        amount: amount,
+        fee: fee,
+        total: total
+      });
+      
+      // Show summary modal
+      summaryModal.style.display = 'flex';
+    }
   }
   
   // Modal Controls
-  document.querySelector('.modal-close').addEventListener('click', function() {
-    document.getElementById('transaction-summary-modal').style.display = 'none';
-  });
-  
-  document.getElementById('cancel-transaction').addEventListener('click', function() {
-    document.getElementById('transaction-summary-modal').style.display = 'none';
-  });
-  
-  document.getElementById('confirm-transaction').addEventListener('click', function() {
-    document.getElementById('transaction-summary-modal').style.display = 'none';
-    document.getElementById('withdrawal-pin-modal').style.display = 'flex';
-  });
-  
-  // PIN Input Handling
-  const pinInput = document.getElementById('hidden-pin-input');
-  const pinDots = document.querySelectorAll('.pin-dot');
-  
-  document.querySelectorAll('.pin-key[data-key]').forEach(key => {
-    key.addEventListener('click', function() {
-      if (pinInput.value.length < 6) {
-        pinInput.value += this.dataset.key;
-        updatePinDots();
-      }
+  const modalClose = document.querySelector('.modal-close');
+  if (modalClose) {
+    modalClose.addEventListener('click', function() {
+      const modal = document.getElementById('transaction-summary-modal');
+      if (modal) modal.style.display = 'none';
     });
-  });
+  }
   
-  document.querySelector('.pin-key[data-action="clear"]').addEventListener('click', function() {
-    pinInput.value = '';
-    updatePinDots();
-  });
+  const cancelTransaction = document.getElementById('cancel-transaction');
+  if (cancelTransaction) {
+    cancelTransaction.addEventListener('click', function() {
+      const modal = document.getElementById('transaction-summary-modal');
+      if (modal) modal.style.display = 'none';
+    });
+  }
   
-  document.querySelector('.pin-key[data-action="submit"]').addEventListener('click', submitWithdrawal);
-  
-  function updatePinDots() {
-    pinDots.forEach((dot, index) => {
-      if (index < pinInput.value.length) {
-        dot.classList.add('filled');
-      } else {
-        dot.classList.remove('filled');
+  const confirmTransaction = document.getElementById('confirm-transaction');
+  if (confirmTransaction) {
+    confirmTransaction.addEventListener('click', function() {
+      const summaryModal = document.getElementById('transaction-summary-modal');
+      const pinModal = document.getElementById('withdrawal-pin-modal');
+      if (summaryModal) summaryModal.style.display = 'none';
+      if (pinModal) {
+        pinModal.classList.remove('hidden');
+        pinModal.style.display = 'flex';
       }
     });
   }
   
-    async function submitWithdrawal() {
+  // PIN Modal Backdrop Click to Close
+  const withdrawalPinModal = document.getElementById('withdrawal-pin-modal');
+  if (withdrawalPinModal) {
+    withdrawalPinModal.addEventListener('click', function(e) {
+      // Only close if clicked on the modal backdrop (not on modal-content)
+      if (e.target === withdrawalPinModal) {
+        withdrawalPinModal.classList.add('hidden');
+        withdrawalPinModal.style.display = 'none';
+        // Reset PIN input when modal is closed
+        const pinInput = document.getElementById('custom-pin');
+        if (pinInput) pinInput.value = '';
+      }
+    });
+  }
+  
+  // PIN Input Handling
+  const pinInput = document.getElementById('custom-pin');
+  
+  document.querySelectorAll('.keyboard-key[data-key]').forEach(key => {
+    key.addEventListener('click', function() {
+      const keyValue = this.dataset.key;
+      if (keyValue === 'clear') {
+        // Close modal and reset PIN input
+        const pinModal = document.getElementById('withdrawal-pin-modal');
+        if (pinModal) {
+          pinModal.classList.add('hidden');
+          pinModal.style.display = 'none';
+        }
+        pinInput.value = '';
+      } else if (keyValue === 'submit') {
+        submitWithdrawal();
+      } else if (keyValue !== 'question' && pinInput.value.length < 6) {
+        pinInput.value += keyValue;
+      }
+    });
+  });
+  
+  async function submitWithdrawal() {
         if (pinInput.value.length < 4) {
             alert('Please enter at least 4 digits');
             return;
@@ -1594,7 +1628,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
         
         // Show loading state
-        const submitBtn = document.querySelector('.pin-key[data-action="submit"]');
+        const submitBtn = document.querySelector('.keyboard-key[data-key="submit"]');
         const originalBtnHTML = submitBtn.innerHTML;
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
         submitBtn.disabled = true;
@@ -1690,11 +1724,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon: 'success',
                 title: 'Success!',
                 text: 'Withdrawal Successful the money is on its way to your Bank.',
-                timer: 3000
+                timer: 7000
             });
             
             // Reset forms and close modals
-            document.getElementById('withdrawal-pin-modal').style.display = 'none';
+            const pinModalEl = document.getElementById('withdrawal-pin-modal');
+            if (pinModalEl) {
+              pinModalEl.classList.add('hidden');
+              pinModalEl.style.display = 'none';
+            }
             document.getElementById('crypto-method').querySelector('form').reset();
             document.getElementById('bank-method').querySelector('form').reset();
             
@@ -1720,12 +1758,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon: 'error',
                 title: 'Withdrawal Failed',
                 text: errorMessage,
-                timer: 3000
+                timer: 7000
             });
         } finally {
             // Reset PIN input
             pinInput.value = '';
-            updatePinDots();
             submitBtn.innerHTML = originalBtnHTML;
             submitBtn.disabled = false;
         }

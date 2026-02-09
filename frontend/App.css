@@ -4812,12 +4812,8 @@ body.no-scroll {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;  /* This allows it to overlap other elements */
-  top: 0;  /* Adjust to the desired position */
-  left: 0;
-  right: 0;
+  position: relative;  /* Changed from absolute to relative */
   z-index: 10;  /* Higher z-index makes sure it appears on top */
-  display: none;  /* Initially hidden */
 }
 
 /* Title Styling */

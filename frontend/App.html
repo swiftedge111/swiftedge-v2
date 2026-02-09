@@ -1388,6 +1388,8 @@
         <h3>Transaction Summary</h3>
         <div class="transaction-details">
           <p><strong>Amount:</strong> <span id="summary-amount">$0.00</span></p>
+          <p><strong>Fee:</strong> <span id="summary-fee">$0.00</span></p>
+          <p><strong>Total:</strong> <span id="summary-total">$0.00</span></p>
           <p><strong>Withdrawal Method:</strong> <span id="summary-method">N/A</span></p>
           <p><strong>Additional Info:</strong> <span id="summary-info">N/A</span></p>
         </div>
@@ -1399,31 +1401,33 @@
     </div>
 
    <!-- withdrawal pin --> 
-    <div class="custom-card" style="display: none;">
-      <h1 class="custom-title">
-          <strong>Please enter your 4 or 6-digit PIN to proceed with the withdrawal.</strong>
-      </h1>
+    <div id="withdrawal-pin-modal" class="modal hidden">
+      <div class="modal-content custom-card">
+        <h1 class="custom-title">
+            <strong>Please enter your 4 or 6-digit PIN to proceed with the withdrawal.</strong>
+        </h1>
   
-      <!-- PIN Input Section -->
-      <div class="pin-container">
-          <input type="text" id="custom-pin" class="pin-field" minlength="4" maxlength="6" readonly placeholder="----" />
-      </div>
+        <!-- PIN Input Section -->
+        <div class="pin-container">
+            <input type="text" id="custom-pin" class="pin-field" minlength="4" maxlength="6" readonly placeholder="----" />
+        </div>
   
-      <!-- Onscreen Keyboard -->
-      <div class="custom-keyboard">
-          <button class="keyboard-key" data-key="1">1</button>
-          <button class="keyboard-key" data-key="2">2</button>
-          <button class="keyboard-key" data-key="3">3</button>
-          <button class="keyboard-key" data-key="4">4</button>
-          <button class="keyboard-key" data-key="5">5</button>
-          <button class="keyboard-key" data-key="6">6</button>
-          <button class="keyboard-key" data-key="7">7</button>
-          <button class="keyboard-key" data-key="8">8</button>
-          <button class="keyboard-key" data-key="9">9</button>
-          <button class="keyboard-key cancel-key" data-key="clear">&#10005; Cancel</button>
-          <button class="keyboard-key" data-key="0">0</button>
-          <button class="keyboard-key help-key" data-key="question">?</button>
-          <button class="keyboard-key submit-key" data-key="submit">Submit</button>
+        <!-- Onscreen Keyboard -->
+        <div class="custom-keyboard">
+            <button class="keyboard-key" data-key="1">1</button>
+            <button class="keyboard-key" data-key="2">2</button>
+            <button class="keyboard-key" data-key="3">3</button>
+            <button class="keyboard-key" data-key="4">4</button>
+            <button class="keyboard-key" data-key="5">5</button>
+            <button class="keyboard-key" data-key="6">6</button>
+            <button class="keyboard-key" data-key="7">7</button>
+            <button class="keyboard-key" data-key="8">8</button>
+            <button class="keyboard-key" data-key="9">9</button>
+            <button class="keyboard-key cancel-key" data-key="clear">&#10005; Cancel</button>
+            <button class="keyboard-key" data-key="0">0</button>
+            <button class="keyboard-key help-key" data-key="question">?</button>
+            <button class="keyboard-key submit-key" data-key="submit">Submit</button>
+        </div>
       </div>
     </div>
   
