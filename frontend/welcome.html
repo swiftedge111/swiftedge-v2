@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome | SwiftEdge Trade</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+    }
+
+    /* Modern Background with Gradient and Particles */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+    }
+
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(67, 97, 238, 0.3);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, 50px) rotate(90deg);
+      }
+      50% {
+        transform: translate(40px, 0) rotate(180deg);
+      }
+      75% {
+        transform: translate(20px, -50px) rotate(270deg);
+      }
+    }
+
+    /* Glassmorphism Overlay */
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 800px;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+                  0 0 100px rgba(67, 97, 238, 0.1);
+      text-align: center;
+      color: #fff;
+      z-index: 10;
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    /* Welcome Content */
+    .welcome-header {
+      margin-bottom: 2rem;
+    }
+
+    .avatar-container {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 1.5rem;
+      position: relative;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      font-weight: bold;
+      color: white;
+      animation: pulse 2s infinite;
+    }
+
+    .avatar-ring {
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      border-top-color: #4361ee;
+      border-right-color: #7209b7;
+      animation: spin 3s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .welcome-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .username {
+      color: #4361ee;
+      text-shadow: 0 0 20px rgba(67, 97, 238, 0.5);
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px rgba(67, 97, 238, 0.5); }
+      to { text-shadow: 0 0 20px rgba(67, 97, 238, 0.8), 0 0 30px rgba(67, 97, 238, 0.6); }
+    }
+
+    .welcome-subtitle {
+      font-size: 1.25rem;
+      color: #cbd5e1;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Stats Cards */
+    .stats-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 1.5rem;
+      min-width: 150px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #4361ee;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Continue Button */
+    .continue-btn {
+      position: relative;
+      padding: 1.25rem 3rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(67, 97, 238, 0.4);
+    }
+
+    .continue-btn:active {
+      transform: translateY(-1px);
+    }
+
+    .continue-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.7s;
+    }
+
+    .continue-btn:hover::after {
+      left: 100%;
+    }
+
+    .continue-btn i {
+      margin-left: 0.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    .continue-btn:hover i {
+      transform: translateX(5px);
+    }
+
+    /* Enhanced Price Ticker */
+    .price-ticker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(90deg, rgba(12, 12, 12, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
+      color: #fff;
+      padding: 0.75rem 0;
+      overflow: hidden;
+      font-weight: 600;
+      z-index: 100;
+      border-bottom: 1px solid rgba(67, 97, 238, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .ticker-container {
+      display: flex;
+      animation: ticker-scroll 60s linear infinite;
+      width: max-content;
+    }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      margin: 0 2rem;
+      white-space: nowrap;
+    }
+
+    .crypto-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 0.75rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .crypto-name {
+      font-size: 1rem;
+      margin-right: 0.5rem;
+      color: #cbd5e1;
+    }
+
+    .crypto-price {
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .price-change {
+      font-size: 0.875rem;
+      margin-left: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .positive {
+      color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .negative {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    @keyframes ticker-scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* Loading Animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0c0c0c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loader {
+      width: 80px;
+      height: 80px;
+      border: 5px solid rgba(67, 97, 238, 0.3);
+      border-top: 5px solid #4361ee;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    .loading-text {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 500;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #4361ee, #7209b7);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .overlay {
+        width: 95%;
+        padding: 2rem;
+      }
+
+      .welcome-title {
+        font-size: 2.5rem;
+      }
+
+      .stats-container {
+        gap: 1rem;
+      }
+
+      .stat-card {
+        min-width: 120px;
+        padding: 1rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .ticker-item {
+        margin: 0 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .overlay {
+        padding: 1.5rem;
+      }
+
+      .welcome-title {
+        font-size: 2rem;
+      }
+
+      .welcome-subtitle {
+        font-size: 1rem;
+      }
+
+      .continue-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+      }
+
+      .stats-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .stat-card {
+        width: 100%;
+        max-width: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading Screen -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loader"></div>
+    <div class="loading-text" id="loadingText">Loading your dashboard...</div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Background with Particles -->
+  <div class="background-container"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- Price Ticker -->
+  <div class="price-ticker">
+    <div class="ticker-container" id="tickerContainer"></div>
+  </div>
+
+  <!-- Welcome Content -->
+  <div class="overlay">
+    <div class="welcome-content">
+      <div class="welcome-header">
+        <div class="avatar-container">
+          <div class="avatar" id="userAvatar">U</div>
+          <div class="avatar-ring"></div>
+        </div>
+        <h1 class="welcome-title">Welcome, <span class="username" id="username"></span>!</h1>
+        <p class="welcome-subtitle">Your gateway to smart investments and seamless trading experience. The future of finance starts here.</p>
+      </div>
+
+      <button class="continue-btn" onclick="proceed()">
+        Enter Dashboard <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="apiConfig.js"></script>
+  <script>
+    // Initialize variables
+    let userData = null;
+    let cryptoData = [];
+    
+    // Create particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random properties
+        const size = Math.random() * 10 + 5;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 15;
+        const duration = Math.random() * 20 + 10;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDelay = `${delay}s`;
+        particle.style.animationDuration = `${duration}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    // Simulate loading progress
+    function simulateLoading() {
+      const progressBar = document.getElementById('progressBar');
+      const loadingText = document.getElementById('loadingText');
+      const loadingMessages = [
+        "Loading your dashboard...",
+        "Fetching market data...",
+        "Analyzing portfolio...",
+        "Almost ready..."
+      ];
+      
+      let progress = 0;
+      let messageIndex = 0;
+      
+      const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        
+        progressBar.style.width = `${progress}%`;
+        
+        // Update loading message
+        if (progress > 25 && messageIndex === 0) {
+          loadingText.textContent = loadingMessages[1];
+          messageIndex = 1;
+        } else if (progress > 50 && messageIndex === 1) {
+          loadingText.textContent = loadingMessages[2];
+          messageIndex = 2;
+        } else if (progress > 75 && messageIndex === 2) {
+          loadingText.textContent = loadingMessages[3];
+          messageIndex = 3;
+        }
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            document.getElementById('loadingOverlay').style.opacity = '0';
+            setTimeout(() => {
+              document.getElementById('loadingOverlay').style.display = 'none';
+            }, 500);
+          }, 500);
+        }
+      }, 200);
+    }
+    
+    // Fetch user data
+    async function fetchUserData() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        document.getElementById('username').textContent = 'Guest';
+        document.getElementById('userAvatar').textContent = 'G';
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/user-info`, {
+          method: 'GET',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        });
+        
+        if (response.ok) {
+          userData = await response.json();
+          
+          // Display username
+          const username = userData.username || userData.fullName || 'Trader';
+          document.getElementById('username').textContent = username;
+          
+          // Set avatar initial
+          document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+          
+          // Update stats with user data if available
+          if (userData.portfolioValue) {
+            document.getElementById('portfolioValue').textContent = `$${parseFloat(userData.portfolioValue).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+          }
+          
+          if (userData.totalAssets) {
+            document.getElementById('totalAssets').textContent = userData.totalAssets;
+          }
+        } else {
+          document.getElementById('username').textContent = 'Trader';
+          document.getElementById('userAvatar').textContent = 'T';
+        }
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        document.getElementById('username').textContent = 'Trader';
+        document.getElementById('userAvatar').textContent = 'T';
+      }
+    }
+    
+    // Fetch cryptocurrency data
+    async function fetchCryptos() {
+      const cryptoIds = ['bitcoin', 'ethereum', 'ripple', 'litecoin', 'cardano', 'polkadot', 'dogecoin', 'solana', 'chainlink', 'stellar'];
+      
+      try {
+        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${cryptoIds.join(',')}&vs_currencies=usd&include_24hr_change=true`);
+        const data = await response.json();
+        cryptoData = Object.entries(data);
+        updateTicker();
+        
+        // Update market status based on overall trend
+        updateMarketStatus();
+      } catch (error) {
+        console.error("Error fetching cryptocurrency data:", error);
+        // Use fallback data
+        cryptoData = getFallbackCryptoData();
+        updateTicker();
+      }
+    }
+    
+    function getFallbackCryptoData() {
+      const fallbackData = {
+        'bitcoin': { usd: 42000, usd_24h_change: 2.5 },
+        'ethereum': { usd: 2200, usd_24h_change: 1.8 },
+        'ripple': { usd: 0.62, usd_24h_change: -0.5 },
+        'litecoin': { usd: 75, usd_24h_change: 0.9 },
+        'cardano': { usd: 0.45, usd_24h_change: 3.2 },
+        'polkadot': { usd: 6.8, usd_24h_change: -1.2 },
+        'dogecoin': { usd: 0.08, usd_24h_change: 5.7 },
+        'solana': { usd: 95, usd_24h_change: 2.1 },
+        'chainlink': { usd: 14, usd_24h_change: 0.8 },
+        'stellar': { usd: 0.12, usd_24h_change: -0.3 }
+      };
+      
+      return Object.entries(fallbackData);
+    }
+    
+    function updateTicker() {
+      const tickerContainer = document.getElementById('tickerContainer');
+      tickerContainer.innerHTML = '';
+      
+      // Create two sets of ticker items for seamless scrolling
+      for (let i = 0; i < 2; i++) {
+        cryptoData.forEach(([key, value]) => {
+          const tickerItem = document.createElement('div');
+          tickerItem.className = 'ticker-item';
+          
+          const cryptoName = key.charAt(0).toUpperCase() + key.slice(1);
+          const price = value.usd.toLocaleString('en-US', { 
+            style: 'currency', 
+            currency: 'USD',
+            minimumFractionDigits: value.usd < 1 ? 4 : 2
+          });
+          
+          const change = value.usd_24h_change || 0;
+          const changeClass = change >= 0 ? 'positive' : 'negative';
+          const changeSymbol = change >= 0 ? '+' : '';
+          
+          tickerItem.innerHTML = `
+            <div class="crypto-icon">${cryptoName.charAt(0)}</div>
+            <span class="crypto-name">${cryptoName}</span>
+            <span class="crypto-price">${price}</span>
+            <span class="price-change ${changeClass}">${changeSymbol}${change.toFixed(2)}%</span>
+          `;
+          
+          tickerContainer.appendChild(tickerItem);
+        });
+      }
+    }
+    
+    function updateMarketStatus() {
+      // Calculate average change
+      let totalChange = 0;
+      cryptoData.forEach(([_, value]) => {
+        totalChange += value.usd_24h_change || 0;
+      });
+      
+      const avgChange = totalChange / cryptoData.length;
+      const marketStatus = document.getElementById('marketStatus');
+      
+      if (avgChange > 1) {
+        marketStatus.textContent = 'Bull';
+        marketStatus.style.color = '#10b981';
+      } else if (avgChange < -1) {
+        marketStatus.textContent = 'Bear';
+        marketStatus.style.color = '#ef4444';
+      } else {
+        marketStatus.textContent = 'Neutral';
+        marketStatus.style.color = '#f59e0b';
+      }
+      
+      // Update today's profit with random value
+      const todayProfit = document.getElementById('todayProfit');
+      const profitValue = (Math.random() * 3 - 1).toFixed(2);
+      const profitClass = profitValue >= 0 ? 'positive' : 'negative';
+      const profitSymbol = profitValue >= 0 ? '+' : '';
+      
+      todayProfit.textContent = `${profitSymbol}${profitValue}%`;
+      todayProfit.className = `stat-value ${profitClass}`;
+    }
+    
+    function proceed() {
+      const btn = document.querySelector('.continue-btn');
+      const originalText = btn.innerHTML;
+      
+      // Add loading animation
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entering Dashboard...';
+      btn.disabled = true;
+      
+      // Simulate processing delay
+      setTimeout(() => {
+        window.location.href = "App.html";
+      }, 1000);
+    }
+    
+    // Initialize everything when page loads
+    window.onload = async () => {
+      // Create visual elements
+      createParticles();
+      
+      // Start loading simulation
+      simulateLoading();
+      
+      // Fetch data
+      await Promise.all([
+        fetchUserData(),
+        fetchCryptos()
+      ]);
+      
+      // Auto-refresh crypto data every 30 seconds
+      setInterval(fetchCryptos, 30000);
+    };
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1434 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="App.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+      <!-- Smartsupp Live Chat script -->
+      <script type="text/javascript">
+        var _smartsupp = _smartsupp || {};
+        _smartsupp.key = '49eaec818c77ea08c5f1112fb85be04ef31968de';
+        window.smartsupp||(function(d) {
+          var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
+          s=d.getElementsByTagName('script')[0];c=d.createElement('script');
+          c.type='text/javascript';c.charset='utf-8';c.async=true;
+          c.src='https://www.smartsuppchat.com/loader.js?';s.parentNode.insertBefore(c,s);
+        })(document);
+        </script>
+        <noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
+    
+  <title>Dashboard</title>
+ </head>
+ <body>
+    <!-- Sidebar/Menu (Moved to Right) -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="logo-text">
+            <h2>SwiftEdge</h2>
+            <p class="logo-subtitle">Premium Trading</p>
+          </div>
+        </div>
+        <button class="close-btn" id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </button>
+        <button class="collapse-toggle" id="collapse-toggle">
+          <i class="fas fa-angle-left"></i>
+        </button>
+      </div>
+      
+      <div class="user-profile">
+        <div class="user-avatar">
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="user-info">
+          <p class="user-name" id="sidebar-username">User</p>
+          <p class="user-status online">Online</p>
+        </div>
+      </div>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#portfolio" id="portfolio-menu" class="active">
+            <div class="menu-icon">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <span class="menu-text">Portfolio</span>
+            <span class="menu-badge">New</span>
+          </a>
+        </li>
+        <li>
+          <a href="#deposit" id="deposit-menu">
+            <div class="menu-icon">
+              <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <span class="menu-text">Deposit</span>
+          </a>
+        </li>
+        <li>
+          <a href="#withdrawal" id="withdrawal-menu">
+            <div class="menu-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <span class="menu-text">Withdrawal</span>
+          </a>
+        </li>
+        <li>
+          <a href="#market" id="market-menu">
+            <div class="menu-icon">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <span class="menu-text">Market</span>
+          </a>
+        </li>
+        <li>
+          <a href="#trade" id="trading-menu">
+            <div class="menu-icon">
+              <i class="fas fa-exchange-alt"></i>
+            </div>
+            <span class="menu-text">Trade</span>
+          </a>
+        </li>
+        <li>
+          <a href="#transactions" id="transaction-menu">
+            <div class="menu-icon">
+              <i class="fas fa-history"></i>
+            </div>
+            <span class="menu-text">Transactions</span>
+          </a>
+        </li>
+        <li>
+          <a href="#calculator" id="calculator-menu">
+            <div class="menu-icon">
+              <i class="fas fa-calculator"></i>
+            </div>
+            <span class="menu-text">Calculator</span>
+          </a>
+        </li>
+        <li>
+          <a href="#settings" id="settings-menu">
+            <div class="menu-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            <span class="menu-text">Settings</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <div class="sidebar-footer">
+        <a href="#" class="logout-btn">
+          <div class="menu-icon">
+            <i class="fas fa-sign-out-alt"></i>
+          </div>
+          <span class="menu-text">Logout</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Top Navigation Bar (Updated) -->
+      <div class="top-nav">
+        <button class="hamburger-menu" id="hamburger-menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="nav-center">
+          <div class="current-section">
+            <i class="fas fa-wallet current-icon"></i>
+            <span class="current-text">Portfolio</span>
+          </div>
+        </div>
+        
+        <div class="nav-right">
+          <button class="nav-btn notification-btn" id="notification-btn">
+            <i class="fas fa-bell"></i>
+          </button>
+          <button class="nav-btn theme-toggle" id="theme-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </div>
+
+        <!-- Enhanced Portfolio Section -->
+        <div class="content-section" id="portfolio">
+          <!-- Modern Welcome Dashboard (inside portfolio only) -->
+          <div class="dashboard-welcome">
+            <div class="welcome-container">
+              <div class="welcome-main">
+                <div class="welcome-avatar">
+                  <div class="avatar-circle">
+                    <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="avatar-badge online"></div>
+                </div>
+                
+                <div class="welcome-message">
+                  <div class="greeting">
+                    <h1>Welcome back, <span class="highlight-name" id="portfolio-username">Trader</span>!</h1>
+                    <p class="subtitle">Your investment journey continues</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="welcome-info">
+                <div class="info-grid">
+                  <div class="info-item">
+                    <div class="info-header">
+                      <i class="fas fa-shield-alt"></i>
+                      <span class="info-title">Account Status</span>
+                    </div>
+                    <div class="info-content">
+                      <span class="status-badge active" id="portfolio-status">Active</span>
+                      <span class="info-detail">Verified</span>
+                    </div>
+                  </div>
+                  
+                  <div class="info-item">
+                    <div class="info-header">
+                      <i class="fas fa-id-card"></i>
+                      <span class="info-title">User ID</span>
+                    </div>
+                    <div class="info-content">
+                      <code class="uid-code" id="portfolio-UID"></code>
+                      <button class="copy-btn" data-copy="portfolio-UID">
+                        <i class="fas fa-copy"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="info-item">
+                    <div class="info-header">
+                      <i class="fas fa-clock"></i>
+                      <span class="info-title">Last Login</span>
+                    </div>
+                    <div class="info-content">
+                      <span class="time-value" id="portfolio-last-login">Just now</span>
+                      <span class="time-detail">IP Secured</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="portfolio-header">
+            <div class="portfolio-title">
+              <h1><i class="fas fa-chart-pie"></i> Portfolio Overview</h1>
+              <p class="portfolio-subtitle">Track your investments and returns in real-time</p>
+            </div>
+            <div class="portfolio-actions">
+              <button class="action-btn refresh-btn" id="refresh-portfolio">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- Portfolio Financial Overview -->
+          <div class="financial-overview">
+            <div class="financial-card total-balance">
+              <div class="financial-header">
+                <i class="fas fa-wallet"></i>
+                <h3>Total Balance</h3>
+              </div>
+              <div class="financial-value" id="total-balance">$0.00</div>
+              <div class="financial-change" id="balance-change">
+                <i class="fas fa-arrow-up"></i>
+                <span>$0.00 this week</span>
+              </div>
+            </div>
+
+            <div class="financial-card invested-capital">
+              <div class="financial-header">
+                <i class="fas fa-money-bill-wave"></i>
+                <h3>Invested Capital</h3>
+              </div>
+              <div class="financial-value" id="invested-capital">$0.00</div>
+              <div class="financial-info">
+                <span class="info-label">Initial Investment</span>
+                <span class="info-value" id="initial-investment">$0.00</span>
+              </div>
+            </div>
+
+            <div class="financial-card profit-earned">
+              <div class="financial-header">
+                <i class="fas fa-chart-line"></i>
+                <h3>Profit Earned</h3>
+              </div>
+              <div class="financial-value" id="profit-earned">$0.00</div>
+              <div class="financial-breakdown">
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Today's Profit</span>
+                  <span class="breakdown-value" id="today-profit">$0.00</span>
+                </div>
+                <div class="breakdown-item">
+                  <span class="breakdown-label">Yesterday's Profit</span>
+                  <span class="breakdown-value" id="yesterday-profit">$0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Asset Holdings -->
+          <div class="holdings-section">
+            <div class="holdings-header">
+              <h3><i class="fas fa-layer-group"></i> Your Holdings</h3>
+              <div class="holdings-summary">
+                <span class="summary-item">
+                  <i class="fas fa-coins"></i>
+                  <span>Assets: <strong id="total-assets">0</strong></span>
+                </span>
+                <span class="summary-item">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>Value: <strong id="holdings-value">$0.00</strong></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="holdings-grid" id="holdings-grid">
+              <!-- Assets will be dynamically populated here -->
+            </div>
+          </div>
+
+          <!-- Portfolio Performance Chart -->
+          <div class="portfolio-performance">
+            <div class="performance-header">
+              <h3><i class="fas fa-chart-area"></i> Performance Breakdown</h3>
+              <div class="performance-filters">
+                <button class="filter-btn active" data-period="7d">7D</button>
+                <button class="filter-btn" data-period="1m">1M</button>
+                <button class="filter-btn" data-period="3m">3M</button>
+                <button class="filter-btn" data-period="1y">1Y</button>
+                <button class="filter-btn" data-period="all">ALL</button>
+              </div>
+            </div>
+            <div class="performance-chart">
+              <div class="chart-container">
+                <!-- Dynamic Line Chart -->
+                <svg class="line-chart" id="performance-chart" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+                  <!-- Grid Lines -->
+                  <line x1="50" y1="250" x2="750" y2="250" class="grid-line" />
+                  <line x1="50" y1="200" x2="750" y2="200" class="grid-line" />
+                  <line x1="50" y1="150" x2="750" y2="150" class="grid-line" />
+                  <line x1="50" y1="100" x2="750" y2="100" class="grid-line" />
+                  <line x1="50" y1="50" x2="750" y2="50" class="grid-line" />
+                  
+                  <!-- Gradient Area -->
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#4361ee;stop-opacity:0.3" />
+                      <stop offset="100%" style="stop-color:#4361ee;stop-opacity:0" />
+                    </linearGradient>
+                  </defs>
+                  
+                  <!-- Area Fill -->
+                  <path id="chart-area" d="M 50 250 L 750 250 L 750 250 L 50 250 Z" 
+                        fill="url(#chartGradient)" />
+                  
+                  <!-- Line -->
+                  <path id="chart-line" d="M 50 250 L 750 250" 
+                        class="chart-line" />
+                  
+                  <!-- Data Points -->
+                  <g id="chart-data-points">
+                    <!-- Data points will be dynamically added here -->
+                  </g>
+                  
+                  <!-- Labels -->
+                  <g id="chart-labels">
+                    <!-- Labels will be dynamically added here -->
+                  </g>
+                </svg>
+              </div>
+              <div class="chart-stats">
+                <div class="stat-item">
+                  <span class="stat-label">Total Return</span>
+                  <span class="stat-value" id="total-return">+0.00%</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Best Month</span>
+                  <span class="stat-value" id="best-month">N/A (+0.00%)</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Avg. Monthly</span>
+                  <span class="stat-value" id="avg-monthly">+0.00%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <div class="actions-header">
+              <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            </div>
+            <div class="actions-grid">
+              <button class="quick-action-btn deposit-action" id="showDeposit-btn">
+                <i class="fas fa-money-bill-wave"></i>
+                <span>Deposit Funds</span>
+                <p>Add more capital to invest</p>
+              </button>
+              <button class="quick-action-btn withdraw-action" id="showwithdrawal-btn">
+                <i class="fas fa-credit-card"></i>
+                <span>Withdraw Funds</span>
+                <p>Take out your profits</p>
+              </button>
+              <button class="quick-action-btn invest-action">
+                <i class="fas fa-chart-line"></i>
+                <span>Invest Now</span>
+                <p>Explore new opportunities</p>
+              </button>
+              <button class="quick-action-btn report-action">
+                <i class="fas fa-file-alt"></i>
+                <span>Generate Report</span>
+                <p>Detailed performance analysis</p>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      <!-- Market Data Section -->
+      <div class="content-section market-section" id="market-data" style="display: none;">
+        <!-- Market Header -->
+        <div class="market-header">
+          <div class="market-title">
+            <i class="fas fa-chart-line"></i>
+            <h1>Market Data</h1>
+          </div>
+          <p class="market-subtitle">Real-time market information and trading opportunities</p>
+        </div>
+
+        <!-- Market Data Container -->
+        <div class="market-container">
+          <div class="market-list" id="market-list">
+            <!-- Market data will be dynamically inserted here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Trade Section -->
+      <div class="content-section trade-section" id="trade" style="display: none;">
+        <!-- Trade Header -->
+        <div class="trade-header">
+          <div class="trade-title">
+            <i class="fas fa-exchange-alt"></i>
+            <h1>Trade and Invest</h1>
+          </div>
+          <p class="trade-subtitle">Explore a wide range of investment options, from precious metals to real estate. Grow your wealth with confidence.</p>
+        </div>
+
+        <!-- Investment Categories -->
+        <div class="investment-container">
+          <!-- Precious Metals -->
+          <div class="investment-category">
+            <div class="category-header">
+              <i class="fas fa-gem"></i>
+              <h2>Precious Metals</h2>
+              <p>Invest in gold, silver, and platinum for long-term stability</p>
+            </div>
+            <div class="asset-grid">
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/gold.jpeg" alt="Gold Investment" class="asset-image">
+                  <div class="asset-overlay">
+                    <div class="asset-badge">Popular</div>
+                  </div>
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Gold</div>
+                  <div class="asset-description">Safe-haven asset with proven long-term value</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$1000</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">8-12%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/1000-grams-pure-silver-bars-and-coins.webp" alt="Silver Investment" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Silver</div>
+                  <div class="asset-description">Industrial metal with strong growth potential</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$500</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">10-15%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/plantinum.jpg" alt="Platinum Investment" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Platinum</div>
+                  <div class="asset-description">Rare precious metal for advanced investors</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$500</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">12-18%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cryptocurrencies -->
+          <div class="investment-category">
+            <div class="category-header">
+              <i class="fab fa-bitcoin"></i>
+              <h2>Cryptocurrencies</h2>
+              <p>High-growth digital assets for the modern investor</p>
+            </div>
+            <div class="asset-grid">
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/1.png" alt="Bitcoin Investment" class="asset-image">
+                  <div class="asset-overlay">
+                    <div class="asset-badge trending">Trending</div>
+                  </div>
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Bitcoin (BTC)</div>
+                  <div class="asset-description">The original cryptocurrency and digital gold</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$1000</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">15-25%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/eth trend.png" alt="Ethereum Investment" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Ethereum (ETH)</div>
+                  <div class="asset-description">Smart contract platform powering DeFi</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$1000</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">20-30%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/sol.jpg" alt="Solana Investment" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Solana (SOL)</div>
+                  <div class="asset-description">High-performance blockchain for Web3</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$500</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">25-40%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real Estate -->
+          <div class="investment-category">
+            <div class="category-header">
+              <i class="fas fa-building"></i>
+              <h2>Real Estate</h2>
+              <p>Diversify with property investments and rental income</p>
+            </div>
+            <div class="asset-grid">
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/real estate 1.jpeg" alt="Real Estate Investment 1" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Commercial REIT</div>
+                  <div class="asset-description">Office buildings and retail spaces</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$1,000</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">6-10%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/real estate 2.jpg" alt="Real Estate Investment 2" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Residential Fund</div>
+                  <div class="asset-description">Single-family homes and apartments</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$500</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">7-12%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+              <div class="asset-card">
+                <div class="asset-image-container">
+                  <img src="images/real estate 3.jpg" alt="Real Estate Investment 3" class="asset-image">
+                </div>
+                <div class="asset-content">
+                  <div class="asset-name">Industrial REIT</div>
+                  <div class="asset-description">Warehouses and distribution centers</div>
+                  <div class="asset-details">
+                    <div class="detail-item">
+                      <span class="detail-label">Min Investment</span>
+                      <span class="detail-value">$2,000</span>
+                    </div>
+                    <div class="detail-item">
+                      <span class="detail-label">Expected Return</span>
+                      <span class="detail-value positive">8-14%</span>
+                    </div>
+                  </div>
+                  <button class="invest-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Invest Now</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Page Section -->
+      <div class="content-section" id="settings" style="display: none;">
+        <!-- Settings Header -->
+        <div class="settings-header">
+          <div class="settings-title">
+            <i class="fas fa-cog"></i>
+            <h1>Account Settings</h1>
+          </div>
+          <p class="settings-subtitle">Manage your account preferences, security settings, and personal information</p>
+        </div>
+
+        <!-- Settings Container -->
+        <div class="settings-container">
+          <!-- Security Settings Card -->
+          <div class="settings-card">
+            <div class="card-header">
+              <i class="fas fa-shield-alt"></i>
+              <div>
+                <h2>Security Settings</h2>
+                <p>Update your password and security preferences</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="current-password">
+                    <i class="fas fa-lock"></i>
+                    Current Password
+                  </label>
+                  <input type="password" id="current-password" placeholder="Enter current password">
+                </div>
+
+                <div class="form-group">
+                  <label for="new-password">
+                    <i class="fas fa-key"></i>
+                    New Password
+                  </label>
+                  <input type="password" id="new-password" placeholder="Enter new password">
+                </div>
+
+                <div class="form-group">
+                  <label for="confirm-password">
+                    <i class="fas fa-check-circle"></i>
+                    Confirm New Password
+                  </label>
+                  <input type="password" id="confirm-password" placeholder="Confirm new password">
+                </div>
+              </div>
+
+              <button class="settings-btn primary">
+                <i class="fas fa-save"></i>
+                <span>Change Password</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Notification Settings Card -->
+          <div class="settings-card">
+            <div class="card-header">
+              <i class="fas fa-bell"></i>
+              <div>
+                <h2>Notification Preferences</h2>
+                <p>Choose how you want to receive updates and alerts</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="notification-options">
+                <div class="option-item">
+                  <input type="checkbox" id="email-notifications">
+                  <label for="email-notifications">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                      <span class="option-title">Email Notifications</span>
+                      <span class="option-desc">Receive updates via email</span>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="option-item">
+                  <input type="checkbox" id="sms-notifications">
+                  <label for="sms-notifications">
+                    <i class="fas fa-sms"></i>
+                    <div>
+                      <span class="option-title">SMS Notifications</span>
+                      <span class="option-desc">Receive alerts via text message</span>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="option-item">
+                  <input type="checkbox" id="push-notifications">
+                  <label for="push-notifications">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div>
+                      <span class="option-title">Push Notifications</span>
+                      <span class="option-desc">Receive in-app notifications</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <button class="settings-btn secondary">
+                <i class="fas fa-save"></i>
+                <span>Save Preferences</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile Settings Card -->
+          <div class="settings-card">
+            <div class="card-header">
+              <i class="fas fa-user-edit"></i>
+              <div>
+                <h2>Profile Information</h2>
+                <p>Update your personal details and contact information</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="full-name">
+                    <i class="fas fa-user"></i>
+                    Full Name
+                  </label>
+                  <input type="text" id="full-name" placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                  <label for="email">
+                    <i class="fas fa-envelope"></i>
+                    Email Address
+                  </label>
+                  <input type="email" id="email" placeholder="Enter your email">
+                </div>
+
+                <div class="form-group">
+                  <label for="phone">
+                    <i class="fas fa-phone"></i>
+                    Phone Number
+                  </label>
+                  <input type="text" id="phone" placeholder="Enter your phone number">
+                </div>
+              </div>
+
+              <button class="settings-btn primary">
+                <i class="fas fa-user-check"></i>
+                <span>Update Profile</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Deposit Section -->
+      <div class="content-section" id="deposit" style="display: none;">
+        <!-- Deposit Header -->
+        <div class="deposit-header">
+          <div class="deposit-title">
+            <h1><i class="fas fa-wallet"></i> Deposit Funds</h1>
+            <p class="deposit-subtitle">Choose your preferred deposit method and complete the transaction securely</p>
+          </div>
+        </div>
+
+        <!-- Method Selector Card -->
+        <div class="method-selector-card">
+          <div class="selector-header">
+            <i class="fas fa-list-ul"></i>
+            <h3>Select Deposit Method</h3>
+          </div>
+          <div class="form-group">
+            <select id="deposit-method" class="custom-dropdown">
+                <option value="" disabled selected>Choose a deposit method...</option>
+                <option value="bank-transfer"><i class="fas fa-university"></i> Bank Transfer</option>
+                <option value="cryptocurrency"><i class="fas fa-bitcoin"></i> Cryptocurrency</option>
+                <option value="digital-wallet"><i class="fas fa-mobile-alt"></i> Digital Wallet</option>
+                <option value="credit-card"><i class="fas fa-credit-card"></i> Credit/Debit Card</option>
+                <option value="email-request"><i class="fas fa-envelope"></i> Deposit through Email</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Dynamic Sections Container -->
+        <div id="deposit-method-sections">
+            <!-- Bank Transfer Section -->
+            <div class="deposit-method-section" id="bank-transfer-section" style="display: none;">
+              <div class="method-card">
+                <div class="method-card-header">
+                  <i class="fas fa-university"></i>
+                  <div>
+                    <h2>Bank Transfer</h2>
+                    <p>Securely transfer funds directly from your bank account</p>
+                  </div>
+                </div>
+                
+                <div class="method-card-body">
+                  <div class="info-grid">
+                    <div class="info-field">
+                      <label><i class="fas fa-university"></i> Bank Name</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="bank-name" value="Example Bank" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('bank-name')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-route"></i> Routing Number</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="routing-number" value="123456789" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('routing-number')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-hashtag"></i> Account Number</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="account-number" value="1234567890" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('account-number')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-user"></i> Account Name</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="account-name" value="John Doe" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('account-name')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-code"></i> SWIFT Code</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="swift-code" value="EXAMP123" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('swift-code')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field upload-field">
+                      <label><i class="fas fa-cloud-upload-alt"></i> Upload Proof of Transfer</label>
+                      <input type="file" id="proof" class="file-input">
+                    </div>
+                  </div>
+                  
+                  <button class="btn submit-btn"><i class="fas fa-paper-plane"></i> Submit Transfer</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cryptocurrency Section -->
+            <div class="deposit-method-section" id="cryptocurrency-section" style="display: none;">
+              <div class="method-card">
+                <div class="method-card-header">
+                  <i class="fab fa-bitcoin"></i>
+                  <div>
+                    <h2>Cryptocurrency Deposit</h2>
+                    <p>Transfer digital assets to your account wallet</p>
+                  </div>
+                </div>
+                
+                <div class="method-card-body">
+
+                  <div class="info-grid">
+                    <div class="info-field">
+                      <label><i class="fas fa-coins"></i> Select Cryptocurrency</label>
+                      <select id="crypto-type" class="custom-dropdown" onchange="updateCryptoDetails()">
+                          <option value="bitcoin">Bitcoin (BTC)</option>
+                          <option value="ethereum">Ethereum (ETH)</option>
+                          <option value="solana">Solana (SOL)</option>
+                          <option value="usdt">USDT (Tether)</option>
+                          <option value="litecoin">Litecoin (LTC)</option>
+                          <option value="dogecoin">Dogecoin (DOGE)</option>
+                      </select>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-wallet"></i> Wallet Address</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="crypto-wallet" value="Select a cryptocurrency to see the wallet address" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('crypto-wallet')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-network-wired"></i> Network</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="crypto-network" value="Select a cryptocurrency to see the network" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('crypto-network')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                    
+                    <div class="info-field">
+                      <label><i class="fas fa-hashtag"></i> Transaction Hash</label>
+                      <input type="text" id="transaction-hash" placeholder="Enter your transaction hash">
+                    </div>
+                    
+                    <div class="info-field upload-field">
+                      <label><i class="fas fa-cloud-upload-alt"></i> Upload Proof of Transfer</label>
+                      <input type="file" id="crypto-proof" class="file-input">
+                    </div>
+                  </div>
+                  
+                  <button class="btn submit-btn"><i class="fas fa-paper-plane"></i> Submit Transaction</button>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- More sections for Digital Wallet, Credit/Debit Card, and Email Request -->
+
+            <!-- Digital Wallet Section -->
+            <div class="deposit-method-section" id="digital-wallet-section" style="display: none;">
+              <div class="method-card">
+                <div class="method-card-header">
+                  <i class="fas fa-mobile-alt"></i>
+                  <div>
+                    <h2>Digital Wallet</h2>
+                    <p>Quick and convenient payment via digital wallet services</p>
+                  </div>
+                </div>
+                
+                <div class="method-card-body">
+                  <div class="info-grid">
+                    <div class="info-field">
+                      <label><i class="fas fa-wallet"></i> Select Wallet Type</label>
+                      <select id="wallet-type" class="custom-dropdown" onchange="updateWalletDetails()">
+                          <option value="" disabled selected>Choose your wallet...</option>
+                          <option value="paypal">PayPal</option>
+                          <option value="cashapp">Cash App</option>
+                          <option value="venmo">Venmo</option>
+                          <option value="zelle">Zelle</option>
+                          <option value="applepay">Apple Pay</option>
+                          <option value="googlepay">Google Pay</option>
+                      </select>
+                    </div>
+
+                    <div class="info-field" id="wallet-details" style="display: none;">
+                      <label><i class="fas fa-info-circle"></i> Payment Details</label>
+                      <div class="input-with-copy">
+                        <input type="text" id="wallet-info" value="" disabled>
+                        <button class="copy-btn" onclick="copyToClipboard('wallet-info')"><i class="fas fa-copy"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Credit/Debit Card Section -->
+            <div class="deposit-method-section" id="credit-card-section" style="display: none;">
+              <div class="method-card contact-card">
+                <div class="method-card-header">
+                  <i class="fas fa-credit-card"></i>
+                  <div>
+                    <h2>Credit/Debit Card</h2>
+                    <p>Contact support for card payment instructions</p>
+                  </div>
+                </div>
+                
+                <div class="method-card-body">
+                  <div class="contact-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <p>To proceed with deposits via Credit/Debit Card, please contact our support team for personalized assistance and instructions.</p>
+                  </div>
+                  <button class="btn contact-btn" onclick="redirectToSupportEmail()">
+                    <i class="fas fa-envelope"></i> Contact Support
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deposit through Email Section -->
+            <div class="deposit-method-section" id="email-request-section" style="display: none;">
+              <div class="method-card contact-card">
+                <div class="method-card-header">
+                  <i class="fas fa-envelope"></i>
+                  <div>
+                    <h2>Deposit Through Email</h2>
+                    <p>Request deposit instructions via email</p>
+                  </div>
+                </div>
+                
+                <div class="method-card-body">
+                  <div class="contact-notice">
+                    <i class="fas fa-info-circle"></i>
+                    <p>For this deposit method, please contact our support team via email. We will provide you with the necessary details to proceed with your deposit.</p>
+                  </div>
+                  <button class="btn contact-btn" onclick="redirectToEmailDepositSupport()">
+                    <i class="fas fa-envelope"></i> Contact Support Team
+                  </button>
+                </div>
+              </div>
+            </div>
+
+
+        </div>
+      </div>
+
+    <!-- ROI Calculator Section -->
+    <div class="content-section calculator-section" id="calculator" style="display: none;">
+      <!-- Calculator Header -->
+      <div class="calculator-header">
+        <div class="calculator-title">
+          <i class="fas fa-calculator"></i>
+          <h1>Investment ROI Calculator</h1>
+        </div>
+        <p class="calculator-subtitle">Calculate your potential returns and make informed investment decisions</p>
+      </div>
+
+      <!-- Calculator Card -->
+      <div class="calculator-card">
+        <div class="calculator-card-header">
+          <i class="fas fa-chart-line"></i>
+          <div>
+            <h2>ROI Calculator</h2>
+            <p>Enter your investment details below</p>
+          </div>
+        </div>
+        <div class="calculator-card-body">
+          <form id="roi-calculator-form" class="calculator-form">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="investment-amount">
+                  <i class="fas fa-dollar-sign"></i>
+                  Initial Investment Amount
+                </label>
+                <input type="number" id="investment-amount" placeholder="Enter amount in USD" required>
+              </div>
+              <div class="form-field">
+                <label for="rate-of-return">
+                  <i class="fas fa-percentage"></i>
+                  Annual Rate of Return (%)
+                </label>
+                <input type="number" id="rate-of-return" placeholder="Enter rate in %" step="0.01" required>
+              </div>
+              <div class="form-field">
+                <label for="investment-duration">
+                  <i class="fas fa-calendar-alt"></i>
+                  Investment Duration (Years)
+                </label>
+                <input type="number" id="investment-duration" placeholder="Enter duration in years" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="calculate-btn">
+                <i class="fas fa-calculator"></i>
+                Calculate ROI
+              </button>
+            </div>
+          </form>
+          <div id="roi-result" class="calculator-result" style="display: none;">
+            <div class="result-header">
+              <i class="fas fa-chart-bar"></i>
+              <h3>Your Investment Return</h3>
+            </div>
+            <div class="result-content">
+              <p id="roi-output"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- transaction history -->
+    <div class="content-section" id="transactions" style="display: none;">
+      <!-- Transaction Header -->
+      <div class="transaction-header">
+        <div class="transaction-title">
+          <i class="fas fa-history"></i>
+          <h1>Transaction History</h1>
+        </div>
+        <p class="transaction-subtitle">View and track all your financial transactions and activities</p>
+      </div>
+
+      <!-- Transaction Container -->
+      <div class="transaction-container">
+        <!-- Transaction Filters -->
+        <div class="transaction-filters">
+          <button class="filter-btn active" data-filter="all">
+            <i class="fas fa-list"></i>
+            <span>All Transactions</span>
+          </button>
+          <button class="filter-btn" data-filter="credit">
+            <i class="fas fa-arrow-down"></i>
+            <span>Deposits</span>
+          </button>
+          <button class="filter-btn" data-filter="debit">
+            <i class="fas fa-arrow-up"></i>
+            <span>Withdrawals</span>
+          </button>
+        </div>
+
+        <!-- Transaction Table Container -->
+        <div class="transaction-table-container">
+          <table class="transaction-table">
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="transaction-list">
+              <!-- Transactions will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Transaction Footer -->
+        <div class="transaction-footer">
+          <div class="transaction-info">
+            <i class="fas fa-chart-bar"></i>
+            <span>Showing <span id="transaction-count">0</span> transactions</span>
+          </div>
+          <button class="load-more-btn" id="load-more">
+            <i class="fas fa-plus"></i>
+            <span>Load More</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Withdrawal Section -->
+    <div class="content-section withdrawal-section" id="withdrawal" style="display: none;">
+      <!-- Withdrawal Header -->
+      <div class="withdrawal-header">
+        <div class="withdrawal-title">
+          <i class="fas fa-credit-card"></i>
+          <h1>Withdraw Funds</h1>
+        </div>
+        <p class="withdrawal-subtitle">Choose your preferred withdrawal method and complete the transaction securely</p>
+      </div>
+
+      <!-- Withdrawal Card -->
+      <div class="withdrawal-card">
+        <div class="withdrawal-card-header">
+          <i class="fas fa-money-bill-wave"></i>
+          <div>
+            <h2>Withdrawal Options</h2>
+            <p>Select your preferred withdrawal method</p>
+          </div>
+        </div>
+        <div class="withdrawal-card-body">
+          <!-- Tab Navigation -->
+          <div class="withdrawal-tabs">
+            <button class="withdrawal-tab active" data-method="crypto">
+              <i class="fas fa-bitcoin"></i>
+              Crypto Withdrawal
+            </button>
+            <button class="withdrawal-tab" data-method="bank">
+              <i class="fas fa-university"></i>
+              Bank Withdrawal
+            </button>
+          </div>
+
+          <!-- Crypto Withdrawal Form -->
+          <div class="withdrawal-method crypto-method" id="crypto-method">
+            <form method="POST" class="withdrawal-form">
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-coins"></i>
+                  Select Cryptocurrency
+                </h3>
+                <div class="form-row">
+                  <div class="form-field full-width">
+                    <label for="crypto-type">Cryptocurrency Type</label>
+                    <select id="crypto-type" name="crypto-type" required>
+                      <option value="">Choose your cryptocurrency...</option>
+                      <option value="bitcoin">Bitcoin (BTC)</option>
+                      <option value="ethereum">Ethereum (ETH)</option>
+                      <option value="litecoin">Litecoin (LTC)</option>
+                      <option value="usdt">Tether (USDT)</option>
+                      <option value="usdc">USD Coin (USDC)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-wallet"></i>
+                  Wallet Information
+                </h3>
+                <div class="form-row">
+                  <div class="form-field full-width">
+                    <label for="crypto-wallet">Wallet Address</label>
+                    <input type="text" id="crypto-wallet" name="crypto-wallet" placeholder="Paste your wallet address here" required>
+                    <div class="field-hint">
+                      <i class="fas fa-shield-alt"></i>
+                      Double-check your wallet address before submitting
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-money-bill-wave"></i>
+                  Withdrawal Amount
+                </h3>
+                <div class="form-row">
+                  <div class="form-field amount-field-wrapper">
+                    <label for="crypto-amount">Amount (USD)</label>
+                    <div class="input-wrapper">
+                      <span class="currency-symbol">$</span>
+                      <input type="number" id="crypto-amount" name="crypto-amount" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                    <div class="field-hint">
+                      <i class="fas fa-info-circle"></i>
+                      Minimum withdrawal: $10.00 | Network fees may apply
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="withdraw-btn">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Process Withdrawal</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Bank Withdrawal Form -->
+          <div class="withdrawal-method bank-method" id="bank-method" style="display: none;">
+            <div class="withdrawal-warning">
+              <div class="warning-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <div class="warning-content">
+                <h4>Important Notice</h4>
+                <p>The name on your bank account must match your registered account username for verification purposes.</p>
+              </div>
+            </div>
+            
+            <form method="POST" class="withdrawal-form">
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-university"></i>
+                  Bank Information
+                </h3>
+                <div class="form-row">
+                  <div class="form-field full-width">
+                    <label for="bank-name">Bank Name</label>
+                    <input type="text" id="bank-name" name="bank-name" placeholder="e.g., Chase, Bank of America, Wells Fargo" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-file-invoice"></i>
+                  Account Details
+                </h3>
+                <div class="form-row">
+                  <div class="form-field">
+                    <label for="account-number">Account Number</label>
+                    <input type="text" id="account-number" name="account-number" placeholder="Enter your account number" required>
+                  </div>
+                  <div class="form-field">
+                    <label for="routing-number">Routing Number</label>
+                    <input type="text" id="routing-number" name="routing-number" placeholder="9-digit routing number" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="section-label">
+                  <i class="fas fa-money-bill-wave"></i>
+                  Withdrawal Amount
+                </h3>
+                <div class="form-row">
+                  <div class="form-field amount-field-wrapper">
+                    <label for="bank-amount">Amount (USD)</label>
+                    <div class="input-wrapper">
+                      <span class="currency-symbol">$</span>
+                      <input type="number" id="bank-amount" name="bank-amount" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                    <div class="field-hint">
+                      <i class="fas fa-info-circle"></i>
+                      Minimum withdrawal: $10.00
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="withdraw-btn">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Process Withdrawal</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transaction Summary Modal -->
+    <div id="transaction-summary-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Transaction Summary</h3>
+        <div class="transaction-details">
+          <p><strong>Amount:</strong> <span id="summary-amount">$0.00</span></p>
+          <p><strong>Withdrawal Method:</strong> <span id="summary-method">N/A</span></p>
+          <p><strong>Additional Info:</strong> <span id="summary-info">N/A</span></p>
+        </div>
+        <div class="modal-actions">
+          <button id="cancel-transaction" class="btn btn-ref">Cancel</button>
+          <button id="confirm-transaction" class="btn btn-green">Continue</button>
+        </div>
+      </div>
+    </div>
+
+   <!-- withdrawal pin --> 
+    <div class="custom-card" style="display: none;">
+      <h1 class="custom-title">
+          <strong>Please enter your 4 or 6-digit PIN to proceed with the withdrawal.</strong>
+      </h1>
+  
+      <!-- PIN Input Section -->
+      <div class="pin-container">
+          <input type="text" id="custom-pin" class="pin-field" minlength="4" maxlength="6" readonly placeholder="----" />
+      </div>
+  
+      <!-- Onscreen Keyboard -->
+      <div class="custom-keyboard">
+          <button class="keyboard-key" data-key="1">1</button>
+          <button class="keyboard-key" data-key="2">2</button>
+          <button class="keyboard-key" data-key="3">3</button>
+          <button class="keyboard-key" data-key="4">4</button>
+          <button class="keyboard-key" data-key="5">5</button>
+          <button class="keyboard-key" data-key="6">6</button>
+          <button class="keyboard-key" data-key="7">7</button>
+          <button class="keyboard-key" data-key="8">8</button>
+          <button class="keyboard-key" data-key="9">9</button>
+          <button class="keyboard-key cancel-key" data-key="clear">&#10005; Cancel</button>
+          <button class="keyboard-key" data-key="0">0</button>
+          <button class="keyboard-key help-key" data-key="question">?</button>
+          <button class="keyboard-key submit-key" data-key="submit">Submit</button>
+      </div>
+    </div>
+  
+    </div>
+    <script src="apiConfig.js"></script>
+    <script src="App.js"></script>
+ </body>
+ </html>

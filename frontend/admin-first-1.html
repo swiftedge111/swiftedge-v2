@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Deposit Management</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Add this in the <head> section -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="logo-text">
+            <h2>SwiftEdge</h2>
+            <p class="logo-subtitle">Admin Panel</p>
+          </div>
+        </div>
+        <button class="close-btn" id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </button>
+        <button class="collapse-toggle" id="collapse-toggle">
+          <i class="fas fa-angle-left"></i>
+        </button>
+      </div>
+
+      <div class="admin-profile">
+        <div class="admin-avatar">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="admin-info">
+          <p class="admin-name" id="admin-username">Admin</p>
+          <p class="admin-status">
+            <span class="status-indicator"></span>
+            Active
+          </p>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <ul class="sidebar-menu">
+        <li>
+          <a href="#" data-section="bank-transfer" class="active">
+            <div class="menu-icon">
+              <i class="fas fa-university"></i>
+            </div>
+            <span class="menu-text">Bank Transfer</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="crypto">
+            <div class="menu-icon">
+              <i class="fas fa-bitcoin"></i>
+            </div>
+            <span class="menu-text">Cryptocurrency</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="digital-wallets">
+            <div class="menu-icon">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <span class="menu-text">Digital Wallets</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="card-email">
+            <div class="menu-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <span class="menu-text">Card & Email</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="manage-holdings">
+            <div class="menu-icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <span class="menu-text">Manage Holdings</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="add-profits">
+            <div class="menu-icon">
+              <i class="fas fa-plus-circle"></i>
+            </div>
+            <span class="menu-text">Add Profits</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="pin-generation">
+            <div class="menu-icon">
+              <i class="fas fa-key"></i>
+            </div>
+            <span class="menu-text">Generate PIN</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="withdrawal-approvals">
+            <div class="menu-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <span class="menu-text">Withdrawals</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" data-section="receipt-generator">
+            <div class="menu-icon">
+              <i class="fas fa-receipt"></i>
+            </div>
+            <span class="menu-text">Receipt Generator</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-footer">
+        <a href="admin-log.html" class="logout-btn" id="admin-logout">
+          <div class="menu-icon">
+            <i class="fas fa-sign-out-alt"></i>
+          </div>
+          <span class="menu-text">Logout</span>
+        </a>
+      </div>
+    </aside>
+  
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Admin Header -->
+    <header class="admin-header" id="admin-header">
+      <button class="hamburger-menu" id="hamburger-menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="nav-center">
+        <div class="current-section">
+          <i class="fas fa-university current-icon" id="current-section-icon"></i>
+          <span class="current-text" id="current-page-name">Bank Transfer</span>
+        </div>
+      </div>
+      
+      <div class="nav-right">
+        <button class="nav-btn notification-btn" id="notification-btn">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        <button class="nav-btn theme-toggle" id="theme-toggle">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content" id="main-content">
+      <!-- Bank Transfer Section -->
+      <section id="bank-transfer" class="content-section">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-university"></i>
+            <h1>Bank Transfer</h1>
+          </div>
+          <p class="section-subtitle">Configure your bank transfer details for secure deposits</p>
+        </div>
+
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-building-columns"></i>
+            <div>
+              <h2>Bank Account Information</h2>
+              <p>Enter your banking details for wire transfers and direct deposits</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <form>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="bank-name">
+                    <i class="fas fa-building"></i>
+                    Bank Name
+                  </label>
+                  <input type="text" id="bank-name" name="bank-name" class="form-input" placeholder="Enter your bank name" />
+                </div>
+
+                <div class="form-group">
+                  <label for="routing-number">
+                    <i class="fas fa-hashtag"></i>
+                    Routing Number
+                  </label>
+                  <input type="text" id="routing-number" name="routing-number" class="form-input" placeholder="9-digit routing number" />
+                </div>
+
+                <div class="form-group">
+                  <label for="account-number">
+                    <i class="fas fa-credit-card"></i>
+                    Account Number
+                  </label>
+                  <input type="text" id="account-number" name="account-number" class="form-input" placeholder="Your account number" />
+                </div>
+
+                <div class="form-group">
+                  <label for="account-name">
+                    <i class="fas fa-user"></i>
+                    Account Name
+                  </label>
+                  <input type="text" id="account-name" name="account-name" class="form-input" placeholder="Account holder name" />
+                </div>
+
+                <div class="form-group">
+                  <label for="swift-code">
+                    <i class="fas fa-globe"></i>
+                    SWIFT Code
+                  </label>
+                  <input type="text" id="swift-code" name="swift-code" class="form-input" placeholder="SWIFT/BIC code" />
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-bank-transfer" class="btn-primary modern-btn">
+                  <i class="fas fa-save"></i>
+                  <span>Save Bank Details</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+  
+      <!-- Other Sections -->
+      <section id="crypto" class="content-section hidden">
+        <!-- Crypto Header -->
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fab fa-bitcoin"></i>
+            <h1>Cryptocurrency Settings</h1>
+          </div>
+          <p class="section-subtitle">Configure cryptocurrency payment options and wallet details</p>
+        </div>
+
+        <!-- Crypto Form Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fab fa-bitcoin"></i>
+            <div>
+              <h2>Cryptocurrency Configuration</h2>
+              <p>Set up your cryptocurrency payment methods</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <form class="crypto-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="crypto-dropdown">
+                    <i class="fas fa-coins"></i>
+                    Select Cryptocurrency
+                  </label>
+                  <select id="crypto-dropdown" name="crypto-dropdown" class="form-select">
+                    <option value="bitcoin">Bitcoin (BTC)</option>
+                    <option value="ethereum">Ethereum (ETH)</option>
+                    <option value="solana">Solana (SOL)</option>
+                    <option value="usdt">Tether (USDT)</option>
+                    <option value="litecoin">Litecoin (LTC)</option>
+                    <option value="dogecoin">Dogecoin (DOGE)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="wallet-address">
+                    <i class="fas fa-wallet"></i>
+                    Wallet Address
+                  </label>
+                  <input type="text" id="wallet-address" name="wallet-address" class="form-input" placeholder="Enter wallet address">
+                </div>
+
+                <div class="form-group">
+                  <label for="network">
+                    <i class="fas fa-network-wired"></i>
+                    Network
+                  </label>
+                  <input type="text" id="network" name="network" class="form-input" placeholder="e.g., ERC-20, BEP-20">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-crypto" class="btn-primary">
+                  <i class="fas fa-save"></i>
+                  <span>Save Configuration</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Digital Wallet Section -->
+      <section id="digital-wallets" class="content-section hidden">
+        <!-- Digital Wallets Header -->
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-mobile-alt"></i>
+            <h1>Digital Wallets</h1>
+          </div>
+          <p class="section-subtitle">Configure digital wallet payment options and account details</p>
+        </div>
+
+        <!-- Digital Wallets Form Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-mobile-alt"></i>
+            <div>
+              <h2>Digital Wallet Configuration</h2>
+              <p>Set up your digital wallet payment methods</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <form class="wallet-form">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="wallet-type">
+                    <i class="fas fa-credit-card"></i>
+                    Wallet Type
+                  </label>
+                  <select id="wallet-type" name="wallet-type" class="form-select">
+                    <option value="paypal">PayPal</option>
+                    <option value="cashapp">Cash App</option>
+                    <option value="venmo">Venmo</option>
+                    <option value="zelle">Zelle</option>
+                    <option value="applepay">Apple Pay</option>
+                    <option value="googlepay">Google Pay</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="wallet-username">
+                    <i class="fas fa-user"></i>
+                    Wallet Username/Email
+                  </label>
+                  <input type="text" id="wallet-username" name="wallet-username" class="form-input" placeholder="Enter username or email">
+                </div>
+
+                <div class="form-group full-width">
+                  <label for="wallet-info">
+                    <i class="fas fa-info-circle"></i>
+                    Payment Details
+                  </label>
+                  <input type="text" id="wallet-info" name="wallet-info" class="form-input" placeholder="Additional payment information">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="save-digital-wallets" class="btn-primary">
+                  <i class="fas fa-save"></i>
+                  <span>Save Configuration</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card Deposit & Email Section -->
+      <section id="card-email" class="content-section hidden">
+        <!-- Card Deposit Header -->
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-credit-card"></i>
+            <h1>Card Deposit & Email</h1>
+          </div>
+          <p class="section-subtitle">Manage card deposit requests and email-based payment instructions</p>
+        </div>
+
+        <!-- Card Deposit Info Card -->
+        <div class="info-card">
+          <div class="card-header">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <h2>Email-Based Deposits</h2>
+              <p>Card deposit instructions and support</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="info-notice">
+              <div class="notice-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="notice-content">
+                <h3>No Configuration Required</h3>
+                <p>Users will contact support via email for card deposit instructions. All card deposit requests are handled through our secure email support system.</p>
+                <div class="contact-info">
+                  <p><strong>Support Email:</strong> support@swiftedge.com</p>
+                  <p><strong>Response Time:</strong> Within 24 hours</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Manage Holdings Section -->
+      <section id="manage-holdings" class="content-section hidden">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-chart-pie"></i>
+            <h1>Manage Holdings</h1>
+          </div>
+          <p class="section-subtitle">Search users and manage their cryptocurrency holdings and balances</p>
+        </div>
+
+        <!-- Search User Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-search"></i>
+            <div>
+              <h2>Search User</h2>
+              <p>Find a user by their unique identifier to manage their holdings</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="uid-search">
+                  <i class="fas fa-id-badge"></i>
+                  User UID
+                </label>
+                <input type="text" id="uid-search" class="form-input" placeholder="Enter User UID to search">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" id="search-btn" class="btn-primary modern-btn">
+                <i class="fas fa-search"></i>
+                <span>Search User</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Info & Balance Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-user"></i>
+            <div>
+              <h2>User Information</h2>
+              <p>User details and current balance overview</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="info-notice">
+              <div class="notice-icon">
+                <i class="fas fa-info-circle"></i>
+              </div>
+              <div class="notice-content">
+                <h3>User Details</h3>
+                <div class="contact-info">
+                  <p><strong>Full Name:</strong> <span id="user-name">Not loaded</span></p>
+                  <p><strong>Username:</strong> <span id="user-username">Not loaded</span></p>
+                  <p><strong>Email:</strong> <span id="user-email">Not loaded</span></p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="total-balance">
+                  <i class="fas fa-dollar-sign"></i>
+                  Total Balance
+                </label>
+                <div class="balance-input-group">
+                  <span class="currency-symbol">$</span>
+                  <input type="number" id="total-balance" class="form-input" readonly placeholder="0.00">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Holdings Management Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-coins"></i>
+            <div>
+              <h2>Asset Holdings</h2>
+              <p>Add and manage user's cryptocurrency holdings</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Form to Add/Edit Holdings -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="holding-name">
+                  <i class="fas fa-tag"></i>
+                  Asset Name
+                </label>
+                <input type="text" id="holding-name" class="form-input" placeholder="e.g., Bitcoin" required>
+              </div>
+
+              <div class="form-group">
+                <label for="holding-symbol">
+                  <i class="fas fa-hashtag"></i>
+                  Asset Symbol
+                </label>
+                <input type="text" id="holding-symbol" class="form-input" placeholder="e.g., BTC" required>
+              </div>
+
+              <div class="form-group">
+                <label for="holding-amount">
+                  <i class="fas fa-calculator"></i>
+                  Amount
+                </label>
+                <input type="number" id="holding-amount" class="form-input" placeholder="e.g., 0.5" step="any" required>
+              </div>
+
+              <div class="form-group">
+                <label for="holding-value">
+                  <i class="fas fa-dollar-sign"></i>
+                  Fiat Value
+                </label>
+                <input type="number" id="holding-value" class="form-input" placeholder="e.g., 17000" step="any" required>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="add-holding-btn" class="btn-primary modern-btn">
+                <i class="fas fa-plus"></i>
+                <span>Add Holding</span>
+              </button>
+            </div>
+
+            <!-- Existing Holdings Display -->
+            <div class="holdings-display">
+              <h3>Existing Holdings</h3>
+              <div id="holdings-list" class="holdings-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback Messages -->
+        <div id="feedback-msg" class="feedback-msg"></div>
+      </section>
+
+      <!-- Withdrawal Approvals Section -->
+      <section id="withdrawal-approvals" class="content-section hidden">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-check-circle"></i>
+            <h1>Withdrawal Approvals</h1>
+          </div>
+          <p class="section-subtitle">Review and approve pending withdrawal requests from users</p>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h2>Pending Withdrawals</h2>
+              <p>Monitor and manage withdrawal requests requiring approval</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="approvals-summary">
+              <span class="pending-count">0</span> pending requests
+            </div>
+          </div>
+        </div>
+
+        <!-- Withdrawals Table Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            <div>
+              <h2>Withdrawal Requests</h2>
+              <p>Review all pending withdrawal requests and take action</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="admin-table-container">
+              <table class="admin-table withdrawals-table">
+                <thead>
+                  <tr>
+                    <th class="col-date">Date</th>
+                    <th class="col-uid">User</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-method">Method</th>
+                    <th class="col-details">Details</th>
+                    <th class="col-actions">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pending-withdrawals">
+                  <!-- Will be populated dynamically -->
+                  <tr class="empty-state">
+                    <td colspan="6">
+                      <div class="empty-content">
+                        <i class="fas fa-check-circle"></i>
+                        <p>No pending withdrawals at this time</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="table-footer">
+              <div class="refresh-controls">
+                <button class="btn-refresh">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <span class="last-updated">Last updated: Just now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pin Generation -->
+      <section id="pin-generation" class="content-section hidden">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-key"></i>
+            <h1>PIN Generation</h1>
+          </div>
+          <p class="section-subtitle">Generate secure PINs for withdrawal authorizations with customizable expiration times</p>
+        </div>
+
+        <!-- PIN Generation Form Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-shield-alt"></i>
+            <div>
+              <h2>Generate Withdrawal PIN</h2>
+              <p>Create secure PIN codes for withdrawal approvals</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="pin-form">
+              <div class="form-grid">
+                <!-- PIN Type Dropdown -->
+                <div class="form-group">
+                  <label for="pin-type">
+                    <i class="fas fa-hashtag"></i>
+                    PIN Length
+                  </label>
+                  <select id="pin-type" name="pin-type" class="form-select">
+                    <option value="4">4-Digit PIN</option>
+                    <option value="6">6-Digit PIN</option>
+                  </select>
+                </div>
+
+                <!-- Expiration Time Dropdown -->
+                <div class="form-group">
+                  <label for="expiration-time">
+                    <i class="fas fa-clock"></i>
+                    Expiration Time
+                  </label>
+                  <select id="expiration-time" name="expiration-time" class="form-select">
+                    <option value="2">2 minutes</option>
+                    <option value="5">5 minutes</option>
+                    <option value="10">10 minutes</option>
+                    <option value="15">15 minutes</option>
+                    <option value="30">30 minutes</option>
+                    <option value="60">1 hour</option>
+                    <option value="1440">1 day</option>
+                    <option value="2880">2 days</option>
+                    <option value="4320">3 days</option>
+                    <option value="10080">1 week</option>
+                    <option value="20160">2 weeks</option>
+                    <option value="custom">Custom duration</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Custom Expiration Time (only visible if "Custom" is selected) -->
+              <div id="custom-expiration" class="custom-expiration-card">
+                <div class="info-notice">
+                  <div class="notice-icon">
+                    <i class="fas fa-cogs"></i>
+                  </div>
+                  <div class="notice-content">
+                    <h3>Custom Duration Settings</h3>
+                    <p>Specify your own expiration time for the PIN</p>
+                  </div>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="custom-duration">
+                      <i class="fas fa-stopwatch"></i>
+                      Minutes
+                    </label>
+                    <input type="number" id="custom-duration" name="custom-duration" class="form-input" placeholder="e.g., 30" min="1">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="custom-duration-hours">
+                      <i class="fas fa-clock"></i>
+                      Hours
+                    </label>
+                    <input type="number" id="custom-duration-hours" name="custom-duration-hours" class="form-input" placeholder="e.g., 2" min="1">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="custom-duration-days">
+                      <i class="fas fa-calendar"></i>
+                      Days
+                    </label>
+                    <input type="number" id="custom-duration-days" name="custom-duration-days" class="form-input" placeholder="e.g., 1" min="1">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Generate PIN Button -->
+              <div class="form-actions">
+                <button type="button" id="generate-pin" class="btn-primary modern-btn">
+                  <i class="fas fa-magic"></i>
+                  <span>Generate PIN</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- PIN Display Card -->
+        <div id="pin-feedback" class="form-card feedback-card hidden">
+          <div class="card-header">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h2>Generated PIN</h2>
+              <p>Your secure withdrawal PIN is ready</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="pin-display">
+              <div class="pin-code">
+                <span class="pin-label">PIN Code:</span>
+                <span id="generated-pin" class="pin-value"></span>
+              </div>
+              <div class="pin-expiry">
+                <span class="expiry-label">Expires:</span>
+                <span id="expiration-time-display" class="expiry-value"></span>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="copy-pin" class="btn-primary modern-btn">
+                <i class="fas fa-copy"></i>
+                <span>Copy PIN</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Management Actions Card -->
+        <div class="form-card">
+          <div class="card-header">
+            <i class="fas fa-cog"></i>
+            <div>
+              <h2>PIN Management</h2>
+              <p>Manage existing PINs and system settings</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="form-actions">
+              <button type="button" id="deletePinsBtn" class="btn-secondary modern-btn">
+                <i class="fas fa-trash-alt"></i>
+                <span>Delete All PINs</span>
+              </button>
+            </div>
+            <div id="statusMessage" class="status-message"></div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- Receipt Generator -->
+      <section id="receipt-generator" class="content-section hidden">
+        <div class="section-header">
+          <h2><i class="fas fa-receipt"></i> Receipt Generator</h2>
+        </div>
+
+        <div class="receipt-gen-wrapper">
+          <!-- Form Column -->
+          <div class="receipt-gen-form-column">
+            <div class="form-card">
+              <div class="card-header">
+                <i class="fas fa-file-invoice-dollar"></i>
+                <div>
+                  <h3>Receipt Details</h3>
+                  <p>Enter payment information to generate a professional receipt</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <form id="receipt-form">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label for="client-name">
+                        <i class="fas fa-user"></i> Client Name
+                      </label>
+                      <input type="text" id="client-name" class="form-input" placeholder="Enter client name" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="payment-amount">
+                        <i class="fas fa-dollar-sign"></i> Amount ($)
+                      </label>
+                      <div class="input-with-symbol">
+                        <span class="input-symbol">$</span>
+                        <input type="number" id="payment-amount" class="form-input" placeholder="0.00" min="0.01" step="0.01" required>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="payment-description">
+                        <i class="fas fa-sticky-note"></i> Description
+                      </label>
+                      <input type="text" id="payment-description" class="form-input" placeholder="e.g., Profit Share, Investment Return">
+                    </div>
+                    <div class="form-group">
+                      <label for="payment-method">
+                        <i class="fas fa-credit-card"></i> Payment Method
+                      </label>
+                      <select id="payment-method" class="form-select">
+                        <option value="bank-transfer">Bank Transfer</option>
+                        <option value="wire-transfer">Wire Transfer</option>
+                        <option value="check">Check</option>
+                        <option value="crypto">Cryptocurrency</option>
+                      </select>
+                    </div>
+                    <div class="form-group full-width">
+                      <label for="tracking-id">
+                        <i class="fas fa-hashtag"></i> Tracking ID
+                      </label>
+                      <input type="text" id="tracking-id" class="form-input" placeholder="Transaction ID or reference number">
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="button" id="generate-btn" class="btn-primary modern-btn">
+                      <i class="fas fa-magic"></i>
+                      <span>Generate Receipt</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Receipt Preview Column -->
+          <div class="receipt-gen-preview-column hidden" id="receipt-output">
+            <div class="form-card">
+              <div class="card-header">
+                <i class="fas fa-eye"></i>
+                <div>
+                  <h3>Receipt Preview</h3>
+                  <p>Review and download your generated receipt</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="receipt-gen-preview-container">
+                  <div class="receipt-gen-professional-receipt" id="receipt-printable">
+                    <!-- Receipt content will be generated here -->
+                  </div>
+                  <div class="receipt-gen-actions">
+                    <button id="save-png" class="btn-secondary modern-btn">
+                      <i class="fas fa-download"></i>
+                      <span>Save as PNG</span>
+                    </button>
+                    <button id="save-pdf" class="btn-secondary modern-btn">
+                      <i class="fas fa-file-pdf"></i>
+                      <span>Save as PDF</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Add Profits Section - Redesigned -->
+      <section id="add-profits" class="content-section hidden">
+        <div class="section-header">
+          <div class="section-title">
+            <i class="fas fa-plus-circle"></i>
+            <h1>Add Profits</h1>
+          </div>
+          <p class="section-subtitle">Search for a user and add profit to their account</p>
+        </div>
+
+        <!-- Search User Card -->
+        <div class="form-card profit-search-card">
+          <div class="card-header">
+            <i class="fas fa-search"></i>
+            <div>
+              <h2>Search User</h2>
+              <p>Enter the user's UID to find their account</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="profit-search-row">
+              <div class="profit-search-input-wrapper">
+                <i class="fas fa-fingerprint"></i>
+                <input type="text" id="profit-uid-search" class="form-input" placeholder="Enter 8-character UID">
+              </div>
+              <button type="button" id="profit-search-btn" class="btn-primary modern-btn">
+                <i class="fas fa-search"></i>
+                <span>Search</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile & Add Profit Section (hidden initially) -->
+        <div id="profit-user-section" class="profit-user-section hidden">
+          <!-- User Profile Row -->
+          <div class="profit-profile-grid">
+            <!-- User Info Card -->
+            <div class="form-card profit-info-card">
+              <div class="card-header">
+                <i class="fas fa-user-circle"></i>
+                <div>
+                  <h2>User Details</h2>
+                  <p>Account information</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="profit-user-details">
+                  <div class="profit-detail-item">
+                    <span class="profit-detail-label">Full Name</span>
+                    <span id="profit-user-name" class="profit-detail-value">-</span>
+                  </div>
+                  <div class="profit-detail-item">
+                    <span class="profit-detail-label">Email</span>
+                    <span id="profit-user-email" class="profit-detail-value">-</span>
+                  </div>
+                  <div class="profit-detail-item">
+                    <span class="profit-detail-label">UID</span>
+                    <span id="profit-user-uid" class="profit-detail-value profit-uid-badge">-</span>
+                  </div>
+                  <div class="profit-detail-item">
+                    <span class="profit-detail-label">Status</span>
+                    <span id="profit-user-status" class="profit-detail-value">
+                      <span class="status-dot"></span> -
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Balance Summary Card -->
+            <div class="form-card profit-balance-card">
+              <div class="card-header">
+                <i class="fas fa-wallet"></i>
+                <div>
+                  <h2>Balance Summary</h2>
+                  <p>Current account balances</p>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="profit-balance-items">
+                  <div class="profit-balance-item">
+                    <div class="profit-balance-icon holdings-icon">
+                      <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <div class="profit-balance-info">
+                      <span class="profit-balance-label">Holdings</span>
+                      <span id="profit-holding-balance" class="profit-balance-value">$0.00</span>
+                    </div>
+                  </div>
+                  <div class="profit-balance-item">
+                    <div class="profit-balance-icon profit-icon">
+                      <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="profit-balance-info">
+                      <span class="profit-balance-label">Profit</span>
+                      <span id="profit-total-profit" class="profit-balance-value profit-green">$0.00</span>
+                    </div>
+                  </div>
+                  <div class="profit-balance-item profit-total-item">
+                    <div class="profit-balance-icon total-icon">
+                      <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="profit-balance-info">
+                      <span class="profit-balance-label">Total Balance</span>
+                      <span id="profit-total-balance" class="profit-balance-value">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Profit Form Card -->
+          <div class="form-card profit-form-card">
+            <div class="card-header">
+              <i class="fas fa-plus-circle"></i>
+              <div>
+                <h2>Add Profit</h2>
+                <p>Enter the profit amount to add to this user's account</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <form id="add-profit-form" class="profit-add-form">
+                <div class="profit-form-grid">
+                  <div class="form-group">
+                    <label for="profit-amount">
+                      <i class="fas fa-dollar-sign"></i> Amount (USD)
+                    </label>
+                    <input type="number" id="profit-amount" class="form-input" placeholder="Enter amount" min="0.01" step="0.01" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="profit-description">
+                      <i class="fas fa-sticky-note"></i> Description (Optional)
+                    </label>
+                    <input type="text" id="profit-description" class="form-input" placeholder="e.g., Trading profit, Bonus">
+                  </div>
+                </div>
+                <div class="form-actions profit-form-actions">
+                  <button type="button" id="cancel-profit" class="btn-secondary modern-btn">
+                    <i class="fas fa-times"></i>
+                    <span>Clear</span>
+                  </button>
+                  <button type="submit" id="submit-profit" class="btn-primary modern-btn">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Profit</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Profit History Card -->
+          <div class="form-card profit-history-card">
+            <div class="card-header">
+              <i class="fas fa-history"></i>
+              <div>
+                <h2>Profit History</h2>
+                <p>All profit additions for this user</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="admin-table profit-history-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Amount</th>
+                      <th>Description</th>
+                      <th>Added By</th>
+                    </tr>
+                  </thead>
+                  <tbody id="profits-list">
+                    <tr>
+                      <td colspan="4" class="no-data">
+                        <i class="fas fa-coins"></i>
+                        <p>No profit history found</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="profit-history-summary">
+                <div class="profit-summary-item">
+                  <i class="fas fa-hand-holding-usd"></i>
+                  <span>Total Profits:</span>
+                  <strong id="total-profits-sum">$0.00</strong>
+                </div>
+                <div class="profit-summary-item">
+                  <i class="fas fa-list-ol"></i>
+                  <span>Transactions:</span>
+                  <strong id="total-profits-count">0</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <script src="apiConfig.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,742 @@
+/* Base Styles */
+:root {
+    --primary-color: #4361ee;
+    --primary-hover: #3a56d4;
+    --secondary-color: #7209b7;
+    --accent-color: #f72585;
+    --success-color: #4cc9f0;
+    --warning-color: #f8961e;
+    --danger-color: #ef233c;
+    --text-primary: #2b2d42;
+    --text-secondary: #6c757d;
+    --bg-color: #ffffff;
+    --card-bg: #f8f9fa;
+    --border-color: #e9ecef;
+    --light-gray: #f1f3f5;
+    --dark-gray: #495057;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease-in-out;
+    --border-radius: 10px;
+    --input-height: 48px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text-primary);
+    background: #f8f9fa;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Layout */
+.auth-container {
+    display: flex;
+    background: var(--bg-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    min-height: 700px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.auth-hero {
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: white;
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-width: 400px;
+    box-shadow: 0 0 40px rgba(67, 97, 238, 0.2);
+}
+
+.auth-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    flex: 1;
+    background: var(--bg-color);
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+/* Hero Section */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.logo {
+    height: 50px;
+    width: auto;
+    border-radius: 10px;
+}
+
+.logo-container h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff, #f0f0f0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-image {
+    display: none; /* Image removed as requested */
+}
+
+.hero-quote blockquote {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin: 2rem 0;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.hero-quote blockquote::before {
+    content: '"';
+    font-size: 4rem;
+    position: absolute;
+    left: -0.5rem;
+    top: -1rem;
+    opacity: 0.2;
+    font-weight: bold;
+}
+
+/* Form Header */
+.form-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.form-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.form-header p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+}
+
+/* Social Login - Hidden as requested */
+.social-login {
+    display: none; /* Social login buttons removed */
+}
+
+/* Divider - Updated since social login is hidden */
+.divider {
+    display: none; /* Divider removed since we don't need "or sign up with email" anymore */
+}
+
+/* Form Inputs */
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Ensure children of input-grid don't have extra margin */
+.input-grid > .input-group {
+    margin-bottom: 0;
+}
+
+/* Password requirements directly after input-group in grid */
+.input-grid > .password-requirements {
+    margin-top: -0.5rem;
+    margin-bottom: 0;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.3px;
+}
+
+.input-group input {
+    width: 100%;
+    height: var(--input-height);
+    padding: 0 1rem 0 3rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 0.9375rem;
+    transition: var(--transition);
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    font-weight: 500;
+    position: relative;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+    background-color: #ffffff;
+}
+
+.input-group input::placeholder {
+    color: #adb5bd;
+    font-weight: 400;
+}
+
+/* Focused input group styling */
+.input-group.focused .input-icon {
+    color: var(--primary-color);
+}
+
+.input-group.has-value input {
+    background-color: #ffffff;
+}
+
+/* Smooth transitions for better UX */
+.input-group input,
+.input-icon,
+.toggle-password {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Input Icons */
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: calc(50% + 14px);
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Password Toggle Button - Industry Standard Design */
+.toggle-password {
+    position: absolute;
+    right: 0.75rem;
+    top: calc(50% + 14px);
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    height: 36px;
+    width: 36px;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.toggle-password:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.toggle-password svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: var(--transition);
+}
+
+/* Eye icon states */
+.toggle-password.showing svg:first-child {
+    display: none;
+}
+
+.toggle-password.showing svg:last-child {
+    display: block;
+}
+
+.toggle-password:not(.showing) svg:last-child {
+    display: none;
+}
+
+/* Password input with toggle button */
+.input-group:has(.toggle-password) input {
+    padding-right: 3.5rem;
+}
+
+/* Password Requirements Wrapper */
+.password-requirements {
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Input Hint */
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    display: block;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* Required field indicator */
+.required {
+    color: var(--danger-color);
+    font-weight: 700;
+    margin-left: 2px;
+}
+
+/* Form Options */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.875rem;
+    padding: 0.5rem 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    padding-left: 2rem;
+    color: var(--text-secondary);
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 2px;
+    left: 0;
+    height: 1.25rem;
+    width: 1.25rem;
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+
+.checkbox-container:hover input ~ .checkmark {
+    border-color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2.5px 2.5px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .checkmark::after {
+    display: block;
+}
+
+/* Focus state for accessibility */
+.checkbox-container input:focus ~ .checkmark {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.text-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+    position: relative;
+    white-space: nowrap;
+}
+
+.text-link:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Links inside checkbox container */
+.checkbox-container .text-link {
+    font-weight: 600;
+    display: inline;
+}
+
+/* Submit Button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    height: 52px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    box-shadow: 0 4px 14px rgba(67, 97, 238, 0.3);
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 4px 14px rgba(67, 97, 238, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn-text {
+    transition: opacity 0.2s ease;
+}
+
+/* Button Loader */
+.btn-loader {
+    position: absolute;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    animation: rotate 1s linear infinite;
+}
+
+.spinner circle {
+    stroke: white;
+    stroke-linecap: round;
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite;
+    stroke-width: 4;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+/* Auth Footer */
+.auth-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.auth-footer p {
+    margin: 0;
+}
+
+/* Error States */
+.input-error input {
+    border-color: var(--danger-color) !important;
+    background-color: rgba(239, 35, 60, 0.05) !important;
+    box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.1) !important;
+}
+
+.input-error .input-icon {
+    color: var(--danger-color);
+}
+
+.input-error-message {
+    color: var(--danger-color);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    display: block;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Success States */
+.input-success input {
+    border-color: var(--success-color) !important;
+    box-shadow: 0 0 0 3px rgba(76, 201, 240, 0.1) !important;
+}
+
+.input-success .input-icon {
+    color: var(--success-color);
+}
+
+/* Slide down animation for error messages */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    height: 4px;
+    background: var(--border-color);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.strength-meter {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-meter.weak {
+    width: 33%;
+    background: var(--danger-color);
+}
+
+.strength-meter.medium {
+    width: 66%;
+    background: var(--warning-color);
+}
+
+.strength-meter.strong {
+    width: 100%;
+    background: var(--success-color);
+}
+
+/* Improved Checkbox Styling */
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    padding-left: 2rem;
+    color: var(--text-secondary);
+    transition: var(--transition);
+    line-height: 1.6;
+}
+
+.checkbox-container:hover {
+    color: var(--text-primary);
+}
+
+.checkbox-text {
+    display: inline;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .auth-container {
+        flex-direction: column;
+        max-width: 500px;
+        min-height: auto;
+    }
+    
+    .auth-hero {
+        min-width: auto;
+        padding: 2rem;
+        border-radius: 16px 16px 0 0;
+    }
+    
+    .auth-form-container {
+        padding: 2rem;
+    }
+    
+    .logo-container h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-quote blockquote {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        padding: 10px;
+    }
+    
+    .auth-container {
+        margin: 0;
+        border-radius: 12px;
+    }
+    
+    .input-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    /* Ensure password requirements don't have extra spacing on mobile */
+    .password-requirements {
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .form-header h2 {
+        font-size: 1.75rem;
+    }
+    
+    .form-header p {
+        font-size: 1rem;
+    }
+    
+    .auth-hero {
+        padding: 1.5rem;
+    }
+    
+    .auth-form-container {
+        padding: 1.5rem;
+    }
+    
+    .logo-container {
+        margin-bottom: 2rem;
+    }
+    
+    .logo {
+        height: 40px;
+    }
+    
+    /* Improve checkbox text on mobile */
+    .checkbox-container {
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+    
+    .checkbox-text {
+        display: block;
+    }
+}
+
+/* Loading State */
+.is-loading .btn-text {
+    opacity: 0;
+}
+
+.is-loading .btn-loader {
+    display: flex;
+}
+
+/* Optional: Add smooth focus for keyboard navigation */
+.input-group input:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Optional: Add animation for form appearance */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-form {
+    animation: fadeInUp 0.5s ease-out;
+}

@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | SwiftEdge Trade</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --danger: #e63946;
+            --success: #2a9d8f;
+            --border-radius: 10px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease-in-out;
+            --input-height: 48px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Auth Container - Main wrapper */
+        .auth-container {
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            min-height: 700px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Hero Section - Left side */
+        .auth-hero {
+            background: linear-gradient(135deg, #4361ee, #7209b7);
+            color: white;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+            min-width: 400px;
+            box-shadow: 0 0 40px rgba(67, 97, 238, 0.2);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: 50px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo-container h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-quote blockquote {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .hero-quote blockquote::before {
+            content: '"';
+            font-size: 4rem;
+            position: absolute;
+            left: -0.5rem;
+            top: -1rem;
+            opacity: 0.2;
+            font-weight: bold;
+        }
+
+        .hero-features {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Form Container - Right side */
+        .auth-form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            flex: 1;
+            background: white;
+        }
+
+        .auth-form {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .form-header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .form-header p {
+            color: var(--gray);
+            font-size: 1.05rem;
+        }
+
+        /* Form Input Groups */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: 0.3px;
+        }
+
+        .required {
+            color: var(--danger);
+            font-weight: 700;
+            margin-left: 2px;
+        }
+
+        .input-group input {
+            width: 100%;
+            height: var(--input-height);
+            padding: 0 1rem 0 3rem;
+            border: 2px solid #e9ecef;
+            border-radius: var(--border-radius);
+            font-size: 0.9375rem;
+            transition: var(--transition);
+            background-color: white;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+            background-color: #ffffff;
+        }
+
+        .input-group input::placeholder {
+            color: #adb5bd;
+            font-weight: 400;
+        }
+
+        /* Input Icons */
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: calc(50% + 14px);
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .input-icon svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .input-group.focused .input-icon {
+            color: var(--primary);
+        }
+
+        /* Password Toggle Button */
+        .toggle-password {
+            position: absolute;
+            right: 0.75rem;
+            top: calc(50% + 14px);
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            height: 36px;
+            width: 36px;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .toggle-password:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        .toggle-password svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        /* Eye icon states */
+        .toggle-password.showing svg:first-child {
+            display: none;
+        }
+
+        .toggle-password.showing svg:last-child {
+            display: block;
+        }
+
+        .toggle-password:not(.showing) svg:last-child {
+            display: none;
+        }
+
+        .input-group:has(.toggle-password) input {
+            padding-right: 3.5rem;
+        }
+
+        /* Form Options */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            font-size: 0.875rem;
+            padding: 0.5rem 0;
+        }
+
+        .text-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .text-link:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            height: 52px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 14px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 4px 14px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-text {
+            transition: opacity 0.2s ease;
+        }
+
+        /* Loading State */
+        .is-loading .btn-text {
+            opacity: 0;
+        }
+
+        .is-loading .btn-loader {
+            display: flex;
+        }
+
+        .btn-loader {
+            position: absolute;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            animation: rotate 1s linear infinite;
+        }
+
+        .spinner circle {
+            stroke: white;
+            stroke-linecap: round;
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: 0;
+            animation: dash 1.5s ease-in-out infinite;
+            stroke-width: 4;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes dash {
+            0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+            50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+            100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
+        }
+
+        /* Error States */
+        .input-error input {
+            border-color: var(--danger) !important;
+            background-color: rgba(239, 35, 60, 0.05) !important;
+            box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.1) !important;
+        }
+
+        .input-error .input-icon {
+            color: var(--danger);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+            display: none;
+            font-weight: 500;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Auth Footer */
+        .auth-footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.9375rem;
+            color: var(--gray);
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 500px;
+                min-height: auto;
+            }
+
+            .auth-hero {
+                min-width: auto;
+                padding: 2rem;
+                border-radius: 16px 16px 0 0;
+            }
+
+            .auth-form-container {
+                padding: 2rem;
+            }
+
+            .logo-container h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-quote blockquote {
+                font-size: 1.25rem;
+            }
+
+            .feature-item {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+
+            .auth-container {
+                margin: 0;
+                border-radius: 12px;
+            }
+
+            .form-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .form-header p {
+                font-size: 1rem;
+            }
+
+            .auth-hero {
+                padding: 1.5rem;
+            }
+
+            .auth-form-container {
+                padding: 1.5rem;
+            }
+
+            .logo-container {
+                margin-bottom: 2rem;
+            }
+
+            .logo {
+                height: 40px;
+                width: 40px;
+            }
+
+            .hero-features {
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-hero">
+            <div class="logo-container">
+                <div class="logo">A</div>
+                <h1>Admin Portal</h1>
+            </div>
+            
+            <div class="hero-content">
+                <div class="hero-quote">
+                    <blockquote>Secure access to platform administration</blockquote>
+                </div>
+                
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                                <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                            </svg>
+                        </div>
+                        <span>Enhanced Security Controls</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                            </svg>
+                        </div>
+                        <span>User Management Dashboard</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
+                            </svg>
+                        </div>
+                        <span>System Configuration</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" viewBox="0 0 16 16">
+                                <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                            </svg>
+                        </div>
+                        <span>Activity Monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="auth-form-container">
+            <form class="auth-form" id="adminLoginForm" novalidate>
+                <div class="form-header">
+                    <h2>Welcome Back, Admin</h2>
+                    <p>Sign in to access your administration dashboard</p>
+                </div>
+                
+                <div class="input-group">
+                    <label for="username">Username <span class="required">*</span></label>
+                    <input type="text" id="username" name="username" required autocomplete="username" placeholder="Enter your admin username">
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                            <path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                        </svg>
+                    </div>
+                    <div class="error-message" id="username-error"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" required minlength="8" autocomplete="current-password" placeholder="Enter your admin password">
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                        </svg>
+                    </div>
+                    <button type="button" class="toggle-password" aria-label="Show password" data-target="password">
+                        <!-- Eye open icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                        <!-- Eye closed icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
+                    </button>
+                    <div class="error-message" id="password-error"></div>
+                </div>
+                
+                <div class="form-options">
+                    <span></span>
+                    <a href="#" class="text-link" id="forgotPasswordLink">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="btn-loader">
+                        <svg viewBox="0 0 50 50" class="spinner">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </span>
+                </button>
+                
+                <div class="auth-footer">
+                    <p>Need assistance? <a href="#" class="text-link">Contact Support</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reset Password</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="forgotPasswordForm">
+                <div class="input-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                        </svg>
+                    </div>
+                    <div class="error-message" id="email-error"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="resetBtn">
+                    <span class="btn-text">Send Reset Link</span>
+                    <span class="btn-loader">
+                        <svg viewBox="0 0 50 50" class="spinner">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Password</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="changePasswordForm">
+                <div class="input-group">
+                    <label for="currentPassword">Current Password <span class="required">*</span></label>
+                    <input type="password" id="currentPassword" name="currentPassword" placeholder="Enter current password" required>
+                    <button type="button" class="toggle-password" aria-label="Show password" data-target="currentPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
+                    </button>
+                    <div class="error-message" id="currentPassword-error"></div>
+                </div>
+                <div class="input-group">
+                    <label for="newPassword">New Password <span class="required">*</span></label>
+                    <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password" required>
+                    <button type="button" class="toggle-password" aria-label="Show password" data-target="newPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
+                    </button>
+                    <div class="error-message" id="newPassword-error"></div>
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm New Password <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm new password" required>
+                    <button type="button" class="toggle-password" aria-label="Show password" data-target="confirmPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
+                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+                            <path d="M13.359 11.238C15.06 9.72 16 8 16 8s-3-5.5-8-5.5a7.028 7.028 0 0 0-2.79.588l.77.771A5.944 5.944 0 0 1 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.134 13.134 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755-.165.165-.337.328-.517.486l.708.709z"/>
+                            <path d="M11.297 9.176a3.5 3.5 0 0 0-4.474-4.474l.823.823a2.5 2.5 0 0 1 2.829 2.829l.822.822zm-2.943 1.299l.822.822a3.5 3.5 0 0 1-4.474-4.474l.823.823a2.5 2.5 0 0 0 2.829 2.829z"/>
+                            <path d="M3.35 5.47c-.18.16-.353.322-.518.487A13.134 13.134 0 0 0 1.172 8l.195.288c.335.48.83 1.12 1.465 1.755C4.121 11.332 5.881 12.5 8 12.5c.716 0 1.39-.133 2.02-.36l.77.772A7.029 7.029 0 0 1 8 13.5C3 13.5 0 8 0 8s.939-1.721 2.641-3.238l.708.709zm10.296 8.884l-12-12 .708-.708 12 12-.708.708z"/>
+                        </svg>
+                    </button>
+                    <div class="error-message" id="confirmPassword-error"></div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="changeBtn">
+                    <span class="btn-text">Update Password</span>
+                    <span class="btn-loader">
+                        <svg viewBox="0 0 50 50" class="spinner">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </div>
+    <script src="apiConfig.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const loginForm = document.getElementById('adminLoginForm');
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+            const changePasswordModal = document.getElementById('changePasswordModal');
+            const changePasswordForm = document.getElementById('changePasswordForm');
+            const closeModalButtons = document.querySelectorAll('.close-modal');
+            const loginBtn = document.getElementById('loginBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const changeBtn = document.getElementById('changeBtn');
+
+            // Password toggle functionality with SVG icons
+            document.querySelectorAll('.toggle-password').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.classList.toggle('showing');
+                });
+            });
+
+            // Input focus states
+            document.querySelectorAll('.input-group input').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group').classList.add('focused');
+                });
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group').classList.remove('focused');
+                });
+            });
+
+            // Modal handling
+            forgotPasswordLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                forgotPasswordModal.style.display = 'flex';
+            });
+
+            closeModalButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    forgotPasswordModal.style.display = 'none';
+                    changePasswordModal.style.display = 'none';
+                });
+            });
+
+            window.addEventListener('click', function(e) {
+                if (e.target === forgotPasswordModal) {
+                    forgotPasswordModal.style.display = 'none';
+                }
+                if (e.target === changePasswordModal) {
+                    changePasswordModal.style.display = 'none';
+                }
+            });
+
+            // Admin login form submission
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+
+                // Clear previous errors
+                document.getElementById('username-error').style.display = 'none';
+                document.getElementById('password-error').style.display = 'none';
+
+                // Show loading state
+                loginBtn.classList.add('is-loading');
+                loginBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/admin/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Store token and redirect
+                        localStorage.setItem('authToken', data.token);
+                        window.location.href = 'admin-first-1.html';  
+                    } else {
+                        // Show error message
+                        const errorField = data.field === 'username' ? 'username-error' : 'password-error';
+                        document.getElementById(errorField).textContent = data.message;
+                        document.getElementById(errorField).style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    document.getElementById('password-error').textContent = 'Network error. Please try again.';
+                    document.getElementById('password-error').style.display = 'block';
+                } finally {
+                    // Reset loading state
+                    loginBtn.classList.remove('is-loading');
+                    loginBtn.disabled = false;
+                }
+            });
+
+            // Forgot password form submission
+            forgotPasswordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value.trim();
+                document.getElementById('email-error').style.display = 'none';
+
+                // Show loading state
+                resetBtn.classList.add('is-loading');
+                resetBtn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/admin/forgot-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert('Password reset link sent to your email!');
+                        forgotPasswordModal.style.display = 'none';
+                    } else {
+                        document.getElementById('email-error').textContent = data.message;
+                        document.getElementById('email-error').style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Forgot password error:', error);
+                    document.getElementById('email-error').textContent = 'Network error. Please try again.';
+                    document.getElementById('email-error').style.display = 'block';
+                } finally {
+                    // Reset loading state
+                    resetBtn.classList.remove('is-loading');
+                    resetBtn.disabled = false;
+                }
+            });
+
+            // Change password form submission
+            changePasswordForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Clear previous errors
+                document.getElementById('currentPassword-error').style.display = 'none';
+                document.getElementById('newPassword-error').style.display = 'none';
+                document.getElementById('confirmPassword-error').style.display = 'none';
+
+                // Validate passwords match
+                if (newPassword !== confirmPassword) {
+                    document.getElementById('confirmPassword-error').textContent = 'Passwords do not match';
+                    document.getElementById('confirmPassword-error').style.display = 'block';
+                    return;
+                }
+
+                // Show loading state
+                changeBtn.classList.add('is-loading');
+                changeBtn.disabled = true;
+
+                try {
+                    const token = localStorage.getItem('authToken');
+                    const response = await fetch(`${API_BASE_URL}/admin/change-password`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ currentPassword, newPassword })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        alert('Password changed successfully!');
+                        changePasswordModal.style.display = 'none';
+                        changePasswordForm.reset();
+                    } else {
+                        const errorField = data.field ? `${data.field}-error` : 'currentPassword-error';
+                        document.getElementById(errorField).textContent = data.message;
+                        document.getElementById(errorField).style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Change password error:', error);
+                    document.getElementById('currentPassword-error').textContent = 'Network error. Please try again.';
+                    document.getElementById('currentPassword-error').style.display = 'block';
+                } finally {
+                    // Reset loading state
+                    changeBtn.classList.remove('is-loading');
+                    changeBtn.disabled = false;
+                }
+            });
+            if (window.location.search.includes('change-password=true')) {
+                changePasswordModal.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>
