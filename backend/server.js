@@ -14,7 +14,9 @@ const cron = require('node-cron');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://broker.swiftedgetrade.com'
+}));
 // Serve static files from the frontend folder
 
 app.use(express.static(path.join(__dirname, '../frontend')));
