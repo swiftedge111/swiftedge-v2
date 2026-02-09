@@ -913,11 +913,20 @@ async function sendWelcomeEmail(user) {
 
 // User login
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
+      // Accept either username or email field from the request
+      const rawInput = username || email;
+      
+      if (!rawInput || !password) {
+          return res.status(400).json({ 
+              message: 'Username/email and password are required'
+          });
+      }
+      
       // Convert input to lowercase for case-insensitive comparison
-      const loginInput = username.toLowerCase();
+      const loginInput = rawInput.toLowerCase();
       
       // Check if input is email format
       const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginInput);
