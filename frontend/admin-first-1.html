@@ -466,19 +466,38 @@
                   <p><strong>Full Name:</strong> <span id="user-name">Not loaded</span></p>
                   <p><strong>Username:</strong> <span id="user-username">Not loaded</span></p>
                   <p><strong>Email:</strong> <span id="user-email">Not loaded</span></p>
+                  <p><strong>UID:</strong> <span id="user-uid">Not loaded</span></p>
+                  <p><strong>Status:</strong> <span id="user-status">Not loaded</span></p>
                 </div>
               </div>
             </div>
 
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label for="total-balance">
-                  <i class="fas fa-dollar-sign"></i>
-                  Total Balance
-                </label>
-                <div class="balance-input-group">
-                  <span class="currency-symbol">$</span>
-                  <input type="number" id="total-balance" class="form-input" readonly placeholder="0.00">
+            <div class="profit-balance-items">
+              <div class="profit-balance-item">
+                <div class="profit-balance-icon holdings-icon">
+                  <i class="fas fa-chart-pie"></i>
+                </div>
+                <div class="profit-balance-info">
+                  <span class="profit-balance-label">Holdings Balance</span>
+                  <span id="holding-balance" class="profit-balance-value">$0.00</span>
+                </div>
+              </div>
+              <div class="profit-balance-item">
+                <div class="profit-balance-icon profit-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="profit-balance-info">
+                  <span class="profit-balance-label">Total Profit</span>
+                  <span id="user-total-profit" class="profit-balance-value profit-green">$0.00</span>
+                </div>
+              </div>
+              <div class="profit-balance-item profit-total-item">
+                <div class="profit-balance-icon total-icon">
+                  <i class="fas fa-wallet"></i>
+                </div>
+                <div class="profit-balance-info">
+                  <span class="profit-balance-label">Total Balance</span>
+                  <span id="user-total-balance" class="profit-balance-value">$0.00</span>
                 </div>
               </div>
             </div>

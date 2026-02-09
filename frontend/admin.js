@@ -369,33 +369,59 @@ document.getElementById('search-btn').addEventListener('click', async () => {
     if (!uid) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/admin/user-holdings/${uid}`, {
+        // Use the search-user endpoint to get complete user data including balances
+        const response = await fetch(`${API_BASE_URL}/admin/search-user/${uid}`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
         });
 
         if (!response.ok) throw new Error('User not found');
-        const data = await response.json();
+        const result = await response.json();
+        
+        if (!result.success) {
+            throw new Error(result.message || 'User not found');
+        }
+        
+        const user = result.user;
 
         // Display User Info
-        document.getElementById('user-name').textContent = data.fullName || 'N/A';
-        document.getElementById('user-username').textContent = data.username || 'N/A';
-        document.getElementById('user-email').textContent = data.email || 'N/A';
+        document.getElementById('user-name').textContent = user.fullName || 'N/A';
+        document.getElementById('user-username').textContent = user.username || 'N/A';
+        document.getElementById('user-email').textContent = user.email || 'N/A';
+        document.getElementById('user-uid').textContent = user.uid || 'N/A';
+        
+        // Display Status with color
+        const statusElement = document.getElementById('user-status');
+        let statusColor = '#6b7280'; // default gray
+        if (user.status === 'Active') {
+            statusColor = '#10b981';
+        } else if (user.status === 'Inactive') {
+            statusColor = '#ef4444';
+        }
+        statusElement.innerHTML = `<span class="status-dot" style="background: ${statusColor}; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px;"></span> ${user.status}`;
+        
+        // Display all three balance types
+        document.getElementById('holding-balance').textContent = formatCurrency(user.holdingBalance || 0);
+        document.getElementById('user-total-profit').textContent = formatCurrency(user.totalProfit || 0);
+        document.getElementById('user-total-balance').textContent = formatCurrency(user.totalBalance || 0);
 
-        // Display Holdings
-        const holdingsList = document.getElementById('holdings-list');
-        holdingsList.innerHTML = data.holdings.length === 0 
-            ? '<p class="no-holdings">No holdings found</p>'
-            : data.holdings.map(holding => `
-                <div class="holding-item">
-                    <span class="crypto-amount">${holding.amount} ${holding.symbol}</span>
-                    <span class="crypto-name">${holding.name}</span>
-                    <span class="dollar-value">$${holding.value.toFixed(2)}</span>
-                </div>
-            `).join('');
-
-        // Calculate and display total balance (sum of values)
-        const totalBalance = data.holdings.reduce((sum, h) => sum + h.value, 0);
-        document.getElementById('total-balance').value = totalBalance.toFixed(2);
+        // Fetch and display holdings separately
+        const holdingsResponse = await fetch(`${API_BASE_URL}/admin/user-holdings/${uid}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('authToken')}` }
+        });
+        
+        if (holdingsResponse.ok) {
+            const holdingsData = await holdingsResponse.json();
+            const holdingsList = document.getElementById('holdings-list');
+            holdingsList.innerHTML = holdingsData.holdings.length === 0 
+                ? '<p class="no-holdings">No holdings found</p>'
+                : holdingsData.holdings.map(holding => `
+                    <div class="holding-item">
+                        <span class="crypto-amount">${holding.amount} ${holding.symbol}</span>
+                        <span class="crypto-name">${holding.name}</span>
+                        <span class="dollar-value">$${holding.value.toFixed(2)}</span>
+                    </div>
+                `).join('');
+        }
 
     } catch (error) {
         console.error("Error:", error);
