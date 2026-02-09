@@ -1493,7 +1493,7 @@ app.post('/request-reset', async (req, res) => {
       await user.save();
 
       // Generate reset link with query parameter
-      const resetLink = `https://www.swiftedgetrade.com/update-password.html?token=${resetToken}`;
+      const resetLink = `https://www.broker.swiftedgetrade.com/update-password.html?token=${resetToken}`;
 
       // Send reset email with Resend
       await resend.emails.send({
