@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (token) {
         document.getElementById('token').value = token; // Populate hidden input with token
     } else {
-        alert("Invalid link! Token not found.");
+        showToast('Invalid or incomplete reset link. Please request a new password reset.', 'error', 8000);
+        const btn = document.getElementById('updateBtn');
+        if (btn) btn.disabled = true;
     }
 
     setupPasswordToggles();
@@ -50,14 +52,22 @@ function setToggleState(toggle, isHidden) {
 document.getElementById('update-password-form').addEventListener('submit', async (event) => {
     event.preventDefault();
 
+    const submitBtn = document.getElementById('updateBtn');
     const token = document.getElementById('token').value;
     const newPassword = document.getElementById('new-password').value;
     const confirmPassword = document.getElementById('confirm-password').value;
 
-    if (newPassword !== confirmPassword) {
-        alert('Passwords do not match!');
+    if (newPassword.length < 8) {
+        showToast('Password must be at least 8 characters long.', 'error');
         return;
     }
+
+    if (newPassword !== confirmPassword) {
+        showToast('Passwords do not match!', 'error');
+        return;
+    }
+
+    setLoading(submitBtn, true);
 
     try {
         const response = await fetch(`${API_BASE_URL}/reset-password/${token}`, {
@@ -66,17 +76,26 @@ document.getElementById('update-password-form').addEventListener('submit', async
             body: JSON.stringify({ password: newPassword }),
         });
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
         console.log("Server response:", data);
 
         if (response.ok) {
-            alert('Password updated successfully!');
-            window.location.href = 'login.html';
+            showToast('Password updated successfully! Redirecting to login…', 'success');
+            // Keep button disabled and redirect after the toast is visible
+            setTimeout(() => { window.location.href = 'login.html'; }, 1800);
         } else {
-            alert(data.message || 'Failed to reset password.');
+            showToast(data.message || 'Failed to reset password.', 'error');
+            setLoading(submitBtn, false);
         }
     } catch (error) {
         console.error("Error:", error);
-        alert('An error occurred while resetting your password.');
+        showToast('An error occurred while resetting your password.', 'error');
+        setLoading(submitBtn, false);
     }
 });
+
+function setLoading(btn, isLoading) {
+    if (!btn) return;
+    btn.classList.toggle('is-loading', isLoading);
+    btn.disabled = isLoading;
+}

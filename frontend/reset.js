@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("forgot-password-form");
+    const submitBtn = document.getElementById("resetBtn");
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -7,9 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById("email").value.trim();
 
         if (!email) {
-            alert("Please enter a valid email address.");
+            showToast("Please enter your email address.", "error");
             return;
         }
+
+        setLoading(submitBtn, true);
 
         try {
             const response = await fetch(`${API_BASE_URL}/request-reset`, {
@@ -20,16 +23,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ email }),
             });
 
+            const result = await response.json().catch(() => ({}));
+
             if (response.ok) {
-                const result = await response.json();
-                alert(result.message || 'Reset link sent! Please check your email.');
+                showToast(result.message || 'Reset link sent! Please check your email.', 'success');
+                form.reset();
             } else {
-                const error = await response.json();
-                alert(error.message || 'Something went wrong. Please try again later.');
+                showToast(result.message || 'Something went wrong. Please try again later.', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An unexpected error occurred. Please try again later.');
+            showToast('An unexpected error occurred. Please try again later.', 'error');
+        } finally {
+            setLoading(submitBtn, false);
         }
     });
+
+    function setLoading(btn, isLoading) {
+        if (!btn) return;
+        btn.classList.toggle('is-loading', isLoading);
+        btn.disabled = isLoading;
+    }
 });
