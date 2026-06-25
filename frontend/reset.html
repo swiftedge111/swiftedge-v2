@@ -3,24 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgotten Password</title>
+    <title>SwiftEdge | Reset Password</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="reset.css">
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="forgot-password-wrapper">
-        <div class="forgot-password-container">
-            <div class="forgot-password-header">
-                <h1>Reset Password</h1>
-                <p>We’ll send you an email to reset your password.</p>
+    <div class="auth-container">
+        <div class="auth-hero">
+            <div class="logo-container">
+                <img src="images/swi_logo.jpg" alt="SwiftEdge Trade" class="logo">
+                <h1>SwiftEdge Trade</h1>
             </div>
-            <form id="forgot-password-form">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required>
-                <button type="submit">Send Reset Link</button>
+            <div class="hero-quote">
+                <blockquote>"Forgot your password? No worries — we'll help you get back to trading in no time."</blockquote>
+            </div>
+        </div>
+
+        <div class="auth-form-container">
+            <form class="auth-form" id="forgot-password-form" novalidate>
+                <div class="form-header">
+                    <h2>Reset Password</h2>
+                    <p>Enter your email and we'll send you a link to reset your password.</p>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required autocomplete="email" placeholder="Enter your email">
+                    <div class="input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="resetBtn">
+                    <span class="btn-text">Send Reset Link</span>
+                    <span class="btn-loader">
+                        <svg viewBox="0 0 50 50" class="spinner">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </span>
+                </button>
+
+                <div class="auth-footer">
+                    <p>Remembered your password? <a href="login.html" class="text-link">Log in</a></p>
+                </div>
             </form>
-            <div class="forgot-password-footer">
-                <p>Remembered? <a href="login.html">Log in</a></p>
-            </div>
         </div>
     </div>
     <script src="apiConfig.js"></script>

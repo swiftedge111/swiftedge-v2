@@ -10,7 +10,42 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         alert("Invalid link! Token not found.");
     }
+
+    setupPasswordToggles();
 });
+
+// Show/hide password toggle (eye icon) for each password field.
+// Mirrors the behaviour used on the login page (see script.js).
+function setupPasswordToggles() {
+    document.querySelectorAll('.toggle-password').forEach((toggle) => {
+        const input = document.getElementById(toggle.getAttribute('data-target'));
+        if (!input) return;
+
+        setToggleState(toggle, input.type === 'password');
+
+        const handle = (event) => {
+            event.preventDefault();
+            input.type = input.type === 'password' ? 'text' : 'password';
+            setToggleState(toggle, input.type === 'password');
+            input.focus();
+        };
+
+        toggle.addEventListener('click', handle);
+        toggle.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') handle(event);
+        });
+    });
+}
+
+function setToggleState(toggle, isHidden) {
+    const icons = toggle.querySelectorAll('svg');
+    if (icons.length < 2) return;
+    // icons[0] = open eye (shown while password hidden), icons[1] = closed eye
+    icons[0].style.display = isHidden ? 'block' : 'none';
+    icons[1].style.display = isHidden ? 'none' : 'block';
+    toggle.classList.toggle('showing', !isHidden);
+    toggle.setAttribute('aria-label', isHidden ? 'Show password' : 'Hide password');
+}
 
 document.getElementById('update-password-form').addEventListener('submit', async (event) => {
     event.preventDefault();
