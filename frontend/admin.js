@@ -833,114 +833,218 @@ document.addEventListener('DOMContentLoaded', function() {
     refreshBtn.addEventListener('click', loadPendingWithdrawals);
 });
  
-// Receipt Generation js
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('generate-btn').addEventListener('click', function() {
-      const clientName = document.getElementById('client-name').value;
-      const amount = parseFloat(document.getElementById('payment-amount').value);
-      const description = document.getElementById('payment-description').value;
-      const method = document.getElementById('payment-method').value;
-      const trackingId = document.getElementById('tracking-id').value;
-      
-      // Generate receipt HTML
-      const receiptHTML = `
-        <div class="receipt-header">
-          <div class="receipt-logo">SWIFT EDGE TRADE</div>
-          <div class="receipt-title">PAYMENT RECEIPT</div>
-          <div class="receipt-meta">
-            <span>Receipt #: R${Math.floor(Math.random() * 1000)}</span>
-            <span>Date: ${new Date().toLocaleDateString('en-US', { 
-              year: 'numeric', 
-              month: 'short', 
-              day: 'numeric' 
-            })}</span>
-          </div>
-        </div>
-        
-        <div class="receipt-body">
-          <div class="receipt-row">
-            <span class="receipt-label">Paid to:</span>
-            <span class="receipt-value">${clientName}</span>
-          </div>
-          
-          <div class="receipt-row">
-            <span class="receipt-label">Description:</span>
-            <span class="receipt-value">${description}</span>
-          </div>
-          
-          <div class="receipt-row">
-            <span class="receipt-label">Amount:</span>
-            <span class="receipt-value receipt-amount">$${amount.toLocaleString('en-US', {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}</span>
-          </div>
-          
-          <div class="receipt-row">
-            <span class="receipt-label">Method:</span>
-            <span class="receipt-value">${method}</span>
-          </div>
-          
-          <div class="tracking-id">
-            Tracking ID: <strong>${trackingId || 'N/A'}</strong>
-          </div>
-        </div>
-        
-        <div class="receipt-footer">
-          <p>Thank you for trading with us.</p>
-          <p>SWIFT EDGE TRADE LLC</p>
-          <p>Financial Street, New York, NY</p>
-          <p>Swiftedgetrade.com | (555) 123-4567</p>
-        </div>
-      `;
-      
-      // Insert into receipt container
-      document.getElementById('receipt-printable').innerHTML = receiptHTML;
-      
-      // Show receipt preview
-      document.getElementById('receipt-output').classList.remove('hidden');
+// ==================== RECEIPT GENERATION ====================
+document.addEventListener('DOMContentLoaded', function () {
+    const generateBtn = document.getElementById('generate-btn');
+    if (!generateBtn) return; // Receipt section not present on this page
+
+    // Visual config per status — colour-coded badge shown on the receipt
+    const STATUS_CONFIG = {
+        successful: { label: 'Successful', color: '#15803d', bg: '#dcfce7', accent: '#16a34a', icon: '&#10003;' },
+        pending:    { label: 'Pending',    color: '#b45309', bg: '#fef3c7', accent: '#f59e0b', icon: '&#9202;' },
+        failed:     { label: 'Failed',     color: '#b91c1c', bg: '#fee2e2', accent: '#ef4444', icon: '&#10007;' }
+    };
+
+    const METHOD_LABELS = {
+        'bank-transfer': 'Bank Transfer',
+        'wire-transfer': 'Wire Transfer',
+        'check': 'Check',
+        'crypto': 'Cryptocurrency'
+    };
+
+    // Escape user input so it can't break the receipt markup
+    function escapeHtml(value) {
+        return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // A single label/value line — omitted entirely when the value is empty
+    function detailRow(label, value) {
+        if (!value) return '';
+        return `<tr>
+            <td style="padding:11px 0;border-bottom:1px solid #eef2f7;font-size:13px;color:#64748b;font-weight:500;vertical-align:top;white-space:nowrap;">${label}</td>
+            <td style="padding:11px 0 11px 18px;border-bottom:1px solid #eef2f7;font-size:13px;color:#0f172a;font-weight:600;text-align:right;vertical-align:top;word-break:break-word;">${escapeHtml(value)}</td>
+        </tr>`;
+    }
+
+    function sectionTitle(text, accent) {
+        return `<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${accent};margin:0 0 2px 0;">${text}</div>`;
+    }
+
+    generateBtn.addEventListener('click', function () {
+        const senderName    = document.getElementById('client-name').value.trim();
+        const receiverName  = document.getElementById('receiver-name').value.trim();
+        const receiverAcct  = document.getElementById('receiver-account').value.trim();
+        const receiverBank  = document.getElementById('receiver-bank').value.trim();
+        const amount        = parseFloat(document.getElementById('payment-amount').value);
+        const description   = document.getElementById('payment-description').value.trim();
+        const methodKey     = document.getElementById('payment-method').value;
+        const trackingId    = document.getElementById('tracking-id').value.trim();
+        const statusKey     = document.getElementById('payment-status').value;
+
+        // Validation
+        if (!receiverName) {
+            Swal.fire('Missing info', 'Please enter the receiver name.', 'warning');
+            return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+            Swal.fire('Invalid amount', 'Please enter a valid amount greater than 0.', 'warning');
+            return;
+        }
+
+        const status = STATUS_CONFIG[statusKey] || STATUS_CONFIG.successful;
+        const method = METHOD_LABELS[methodKey] || methodKey;
+        const fmtAmount = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        const now = new Date();
+        const pad = (n) => ('' + n).padStart(2, '0');
+        const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        const receiptNo = 'SE-' + now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate())
+            + '-' + Math.floor(1000 + Math.random() * 9000);
+
+        // Real brand logo (base64 data URI for reliable html2canvas capture),
+        // with a graceful fallback to the file on disk.
+        const logoSrc = window.SWIFTEDGE_RECEIPT_LOGO || 'images/swi_logo.jpg';
+
+        // Layout is built with tables + inline styles so html2canvas renders it
+        // pixel-perfectly in the downloaded PNG/PDF (no reliance on external CSS).
+        const receiptHTML = `
+        <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e2e8f0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#0f172a;">
+
+            <!-- Header -->
+            <div style="background:linear-gradient(135deg,#4361ee 0%,#7209b7 100%);padding:24px 28px;">
+                <table style="width:100%;border-collapse:collapse;"><tr>
+                    <td style="vertical-align:middle;">
+                        <table style="border-collapse:collapse;"><tr>
+                            <td style="vertical-align:middle;">
+                                <img src="${logoSrc}" alt="SwiftEdge Trade" style="width:52px;height:52px;display:block;border-radius:10px;object-fit:cover;">
+                            </td>
+                            <td style="vertical-align:middle;padding-left:12px;">
+                                <div style="font-size:18px;font-weight:800;letter-spacing:.3px;line-height:1.1;color:#ffffff;">SwiftEdge Trade</div>
+                                <div style="font-size:10px;color:rgba(255,255,255,0.82);letter-spacing:1.2px;margin-top:3px;">SECURE TRADING PLATFORM</div>
+                            </td>
+                        </tr></table>
+                    </td>
+                    <td style="vertical-align:middle;text-align:right;">
+                        <div style="font-size:9px;color:rgba(255,255,255,0.75);letter-spacing:1px;">RECEIPT NO.</div>
+                        <div style="font-size:13px;font-weight:700;margin-top:3px;color:#ffffff;">${receiptNo}</div>
+                    </td>
+                </tr></table>
+            </div>
+
+            <!-- Amount hero -->
+            <div style="padding:26px 28px 24px 28px;text-align:center;background:#ffffff;">
+                <div style="font-size:11px;letter-spacing:1.5px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Amount</div>
+                <div style="font-size:38px;font-weight:800;color:#0f172a;margin:7px 0 14px 0;letter-spacing:-0.5px;">$${fmtAmount}</div>
+                <div style="display:inline-block;padding:7px 16px;border-radius:999px;background:${status.bg};color:${status.color};font-size:12px;font-weight:700;letter-spacing:.4px;border:1px solid ${status.accent};">
+                    ${status.icon}&nbsp; ${status.label.toUpperCase()}
+                </div>
+            </div>
+
+            <!-- Recipient details -->
+            <div style="padding:6px 28px 0 28px;">
+                ${sectionTitle('Recipient Details', '#4361ee')}
+                <table style="width:100%;border-collapse:collapse;">
+                    ${detailRow('Receiver Name', receiverName)}
+                    ${detailRow('Account Number', receiverAcct)}
+                    ${detailRow('Bank', receiverBank)}
+                </table>
+            </div>
+
+            <!-- Transaction details -->
+            <div style="padding:16px 28px 8px 28px;">
+                ${sectionTitle('Transaction Details', '#7209b7')}
+                <table style="width:100%;border-collapse:collapse;">
+                    ${detailRow('Sender', senderName)}
+                    ${detailRow('Payment Method', method)}
+                    ${detailRow('Description', description)}
+                    ${detailRow('Tracking ID', trackingId)}
+                    ${detailRow('Date', dateStr)}
+                    ${detailRow('Time', timeStr)}
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div style="margin-top:12px;padding:20px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;">
+                <div style="font-size:12px;color:#334155;font-weight:600;">Thank you for trading with SwiftEdge Trade</div>
+                <div style="font-size:11px;color:#94a3b8;margin-top:7px;line-height:1.7;">
+                    SwiftEdge Trade LLC &middot; Financial Street, New York, NY<br>
+                    swiftedgetrade.com &middot; (555) 123-4567
+                </div>
+            </div>
+        </div>`;
+
+        document.getElementById('receipt-printable').innerHTML = receiptHTML;
+
+        const output = document.getElementById('receipt-output');
+        output.classList.remove('hidden');
+        output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
-  
+
+    // Shared capture options for crisp output
+    function captureReceipt() {
+        return html2canvas(document.getElementById('receipt-printable'), {
+            scale: 3,
+            backgroundColor: '#ffffff',
+            useCORS: true,
+            logging: false
+        });
+    }
+
+    function hasReceipt() {
+        const el = document.getElementById('receipt-printable');
+        if (!el || !el.innerHTML.trim()) {
+            Swal.fire('No receipt', 'Please generate a receipt first.', 'info');
+            return false;
+        }
+        return true;
+    }
+
     // Save as PNG
-    document.getElementById('save-png').addEventListener('click', function() {
-      html2canvas(document.getElementById('receipt-printable')).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `swiftedge-payment-${new Date().getTime()}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      });
+    document.getElementById('save-png').addEventListener('click', function () {
+        if (!hasReceipt()) return;
+        captureReceipt().then(canvas => {
+            const link = document.createElement('a');
+            link.download = `swiftedge-receipt-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(error => {
+            console.error('PNG generation error:', error);
+            Swal.fire('Error', 'Could not generate the image. Please try again.', 'error');
+        });
     });
-  
-    // Save as PDF
-    document.getElementById('save-pdf').addEventListener('click', async function() {
+
+    // Save as PDF — centred on A4 with margins, scaled to fit
+    document.getElementById('save-pdf').addEventListener('click', async function () {
+        if (!hasReceipt()) return;
         try {
-            // Use html2canvas with better rendering options
-            const canvas = await html2canvas(document.getElementById('receipt-printable'), {
-                scale: 2, // Higher quality
-                logging: false,
-                useCORS: true,
-                allowTaint: true
-            });
-            
-            // Initialize jsPDF
-            const pdf = new window.jspdf.jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a5'
-            });
-            
-            // Calculate dimensions to fit A5
-            const imgWidth = pdf.internal.pageSize.getWidth();
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            
-            // Add image to PDF
-            pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
-            
-            // Save the PDF
-            pdf.save(`payment-receipt-${new Date().getTime()}.pdf`);
+            const canvas = await captureReceipt();
+            const pdf = new window.jspdf.jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = pdf.internal.pageSize.getHeight();
+            const margin = 14;
+            const maxW = pageW - margin * 2;
+            const maxH = pageH - margin * 2;
+
+            let imgW = maxW;
+            let imgH = (canvas.height * imgW) / canvas.width;
+            if (imgH > maxH) {
+                imgH = maxH;
+                imgW = (canvas.width * imgH) / canvas.height;
+            }
+            const x = (pageW - imgW) / 2;
+
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', x, margin, imgW, imgH);
+            pdf.save(`swiftedge-receipt-${Date.now()}.pdf`);
         } catch (error) {
             console.error('PDF generation error:', error);
-            alert('Failed to generate PDF. Please check console for details.');
+            Swal.fire('Error', 'Failed to generate PDF. Please try again.', 'error');
         }
     });
 });

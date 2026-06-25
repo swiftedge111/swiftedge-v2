@@ -822,10 +822,28 @@
                 <form id="receipt-form">
                   <div class="form-grid">
                     <div class="form-group">
-                      <label for="client-name">
-                        <i class="fas fa-user"></i> Client Name
+                      <label for="receiver-name">
+                        <i class="fas fa-user-check"></i> Receiver Name
                       </label>
-                      <input type="text" id="client-name" class="form-input" placeholder="Enter client name" required>
+                      <input type="text" id="receiver-name" class="form-input" placeholder="Enter receiver's full name" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="receiver-account">
+                        <i class="fas fa-hashtag"></i> Receiver Account
+                      </label>
+                      <input type="text" id="receiver-account" class="form-input" placeholder="Account number">
+                    </div>
+                    <div class="form-group">
+                      <label for="receiver-bank">
+                        <i class="fas fa-university"></i> Receiver Bank
+                      </label>
+                      <input type="text" id="receiver-bank" class="form-input" placeholder="Bank name">
+                    </div>
+                    <div class="form-group">
+                      <label for="client-name">
+                        <i class="fas fa-user"></i> Sender Name
+                      </label>
+                      <input type="text" id="client-name" class="form-input" placeholder="Enter sender name">
                     </div>
                     <div class="form-group">
                       <label for="payment-amount">
@@ -835,12 +853,6 @@
                         <span class="input-symbol">$</span>
                         <input type="number" id="payment-amount" class="form-input" placeholder="0.00" min="0.01" step="0.01" required>
                       </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="payment-description">
-                        <i class="fas fa-sticky-note"></i> Description
-                      </label>
-                      <input type="text" id="payment-description" class="form-input" placeholder="e.g., Profit Share, Investment Return">
                     </div>
                     <div class="form-group">
                       <label for="payment-method">
@@ -853,9 +865,25 @@
                         <option value="crypto">Cryptocurrency</option>
                       </select>
                     </div>
+                    <div class="form-group">
+                      <label for="payment-status">
+                        <i class="fas fa-circle-check"></i> Status
+                      </label>
+                      <select id="payment-status" class="form-select">
+                        <option value="successful">Successful</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="payment-description">
+                        <i class="fas fa-sticky-note"></i> Description
+                      </label>
+                      <input type="text" id="payment-description" class="form-input" placeholder="e.g., Profit Share, Withdrawal">
+                    </div>
                     <div class="form-group full-width">
                       <label for="tracking-id">
-                        <i class="fas fa-hashtag"></i> Tracking ID
+                        <i class="fas fa-fingerprint"></i> Tracking ID
                       </label>
                       <input type="text" id="tracking-id" class="form-input" placeholder="Transaction ID or reference number">
                     </div>
@@ -1107,6 +1135,7 @@
   </div>
   <script src="apiConfig.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="receipt-logo.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>
