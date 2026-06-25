@@ -879,6 +879,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const senderName    = document.getElementById('client-name').value.trim();
         const receiverName  = document.getElementById('receiver-name').value.trim();
         const receiverAcct  = document.getElementById('receiver-account').value.trim();
+        const routingNumber = document.getElementById('routing-number-receipt').value.trim();
         const receiverBank  = document.getElementById('receiver-bank').value.trim();
         const amount        = parseFloat(document.getElementById('payment-amount').value);
         const description   = document.getElementById('payment-description').value.trim();
@@ -952,6 +953,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <table style="width:100%;border-collapse:collapse;">
                     ${detailRow('Receiver Name', receiverName)}
                     ${detailRow('Account Number', receiverAcct)}
+                    ${detailRow('Routing Number', routingNumber)}
                     ${detailRow('Bank', receiverBank)}
                 </table>
             </div>
