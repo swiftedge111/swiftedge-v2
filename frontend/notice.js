@@ -3,7 +3,7 @@
 // render-blocking <script> in <head>, so it runs BEFORE any page content — or
 // any of that page's other scripts — get to run.
 //
-// While active, it sends every page to maintenance.html. Because the redirect
+// While active, it sends every page to notice.html. Because the redirect
 // fires from <head> (before <body> is parsed), the real page's own scripts
 // never execute: no content, no flash, and no third-party widgets (e.g. the
 // live-chat popup) ever appear. Visitors only ever see the notice page.
@@ -14,17 +14,17 @@
 //   e.g. http://localhost:4000/?bypass=swiftedge2024  (remembered for the rest
 //   of the browser session, so links you click afterwards bypass it too).
 //
-// To change the message visitors see, edit maintenance.html (not this file).
+// To change the message visitors see, edit notice.html (not this file).
 
 (function () {
   var MAINTENANCE_ACTIVE = true;      // ← set to false to bring the site back
   var BYPASS_KEY = 'swiftedge2024';   // ← change to something only you know
-  var NOTICE_PAGE = 'maintenance.html';
+  var NOTICE_PAGE = 'notice.html';
 
   if (!MAINTENANCE_ACTIVE) return;
 
   // Never redirect the notice page itself (avoids a redirect loop).
-  if (/\/maintenance\.html$/i.test(window.location.pathname)) return;
+  if (/\/notice\.html$/i.test(window.location.pathname)) return;
 
   // Preview the real site with ?bypass=KEY, and remember it for the rest of the
   // session so internal links you click afterwards also skip the notice.
