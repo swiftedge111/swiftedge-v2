@@ -14,8 +14,29 @@ const cron = require('node-cron');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); 
 const app = express();
 
+// Allowed browser origins for cross-origin API calls.
+//   1. the production domain
+//   2. the project's Vercel deployments, including preview URLs such as
+//      swiftedge-v2-<hash>-<team>.vercel.app
+//   3. localhost for local development
+// Scoped to the swiftedge-v2 project on purpose: a bare *.vercel.app would let
+// any Vercel-hosted site call this API.
+const allowedOrigins = [
+  /^https:\/\/broker\.swiftedgetrade\.com$/,
+  /^https:\/\/swiftedge-v2[a-z0-9-]*\.vercel\.app$/,
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/
+];
+
 app.use(cors({
-  origin: 'https://broker.swiftedgetrade.com'
+  origin: (origin, callback) => {
+    // No Origin header: same-origin navigation, curl, or server-to-server.
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.some((pattern) => pattern.test(origin))) {
+      return callback(null, true);
+    }
+    return callback(new Error(`Origin not allowed by CORS: ${origin}`));
+  }
 }));
 // Serve static files from the frontend folder
 
