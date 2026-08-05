@@ -186,7 +186,7 @@ document.getElementById('admin-logout').addEventListener('click', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             localStorage.removeItem('adminToken');
-            window.location.href = 'admin-log.html';
+            window.location.href = 'se-m8gcr7kycxkd';
         }
     });
 });
