@@ -14,10 +14,19 @@
     <meta name="robots" content="index, follow">
 
     <!-- Social Media & Open Graph -->
+    <!-- og:image and og:url must be absolute URLs on the live domain. Scrapers
+         (WhatsApp, Facebook, X, LinkedIn) fetch them from their own servers, so
+         a relative path or a stale domain yields no preview at all. -->
+    <meta property="og:site_name" content="SwiftEdge Trade">
     <meta property="og:title" content="SwiftEdge Trade">
     <meta property="og:description" content="Join SwiftEdge Trade – your trusted broker and crypto trading platform for secure investments and financial success.">
-    <meta property="og:image" content="https://swiftedge-trade.vercel.app/images/sol.jpg">
-    <meta property="og:url" content="https://swiftedge-trade.vercel.app">  
+    <meta property="og:image" content="https://broker.swiftedgetrade.com/images/og-image.jpg">
+    <meta property="og:image:secure_url" content="https://broker.swiftedgetrade.com/images/og-image.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="675">
+    <meta property="og:image:alt" content="SwiftEdge Trade">
+    <meta property="og:url" content="https://broker.swiftedgetrade.com/">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="en_US">
 
@@ -25,15 +34,16 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SwiftEdge Trade">
     <meta name="twitter:description" content="A secure broker/crypto trading platform for effortless investments and financial growth.">
-    <meta name="twitter:image" content="https://swiftedge-trade.vercel.app/images/sol.jpg">
-        <!-- Favicon for Modern Browsers -->
-    <link rel="icon" href="images/sol.jpg" type="image/jpg">
+    <meta name="twitter:image" content="https://broker.swiftedgetrade.com/images/og-image.jpg">
+    <meta name="twitter:image:alt" content="SwiftEdge Trade">
+    <!-- Favicon for Modern Browsers -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
 
     <!-- Apple Touch Icon (iOS Devices) -->
-    <link rel="apple-touch-icon" href="images">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
-    <!-- Manifest for Progressive Web Apps -->
-    <link rel="manifest" href="images/sol.jpg">
+    <!-- No manifest link: it previously pointed at an image, which browsers
+         cannot parse. Add a real .webmanifest here if PWA support is wanted. -->
 
     <!-- Smartsupp Live Chat script -->
     <script type="text/javascript">
