@@ -1659,73 +1659,18 @@ app.post('/admin/login', async (req, res) => {
     }
 });
 
-// Forgot Password Route
-app.post('/admin/forgot-password', async (req, res) => {
-    const { email } = req.body;
-
-    try {
-        const admin = await Admin.findOne({ email });
-        if (!admin) {
-            return res.status(404).json({ message: 'No account with that email exists' });
-        }
-
-        // Create reset token (expires in 1 hour)
-        const resetToken = crypto.randomBytes(20).toString('hex');
-        admin.resetPasswordToken = resetToken;
-        admin.resetPasswordExpires = Date.now() + 3600000; 
-        await admin.save();
-
-        // Send email
-        const resetUrl = `${process.env.BASE_URL}/reset-password.html?token=${resetToken}`;
-        
-        const mailOptions = {
-            to: admin.email,
-            from: process.env.EMAIL_FROM,
-            subject: 'Password Reset Request',
-            html: `
-                <p>You requested a password reset for your admin account.</p>
-                <p>Click this link to reset your password:</p>
-                <a href="${resetUrl}">${resetUrl}</a>
-                <p>This link will expire in 1 hour.</p>
-                <p>If you didn't request this, please ignore this email.</p>
-            `
-        };
-
-        await transporter.sendMail(mailOptions);
-        
-        res.json({ message: 'Password reset email sent' });
-    } catch (error) {
-        console.error('Forgot password error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-// Reset Password Route
-app.post('/admin/reset-password', async (req, res) => {
-    const { token, newPassword } = req.body;
-
-    try {
-        const admin = await Admin.findOne({
-            resetPasswordToken: token,
-            resetPasswordExpires: { $gt: Date.now() }
-        });
-
-        if (!admin) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
-        }
-
-        // Hash new password
-        admin.password = await bcrypt.hash(newPassword, 10);
-        admin.resetPasswordToken = undefined;
-        admin.resetPasswordExpires = undefined;
-        await admin.save();
-
-        res.json({ message: 'Password updated successfully' });
-    } catch (error) {
-        console.error('Reset password error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
+// Admin password reset by email was removed. It called transporter.sendMail(),
+// but `transporter` was never defined anywhere in this file, so the route threw
+// a ReferenceError on every request and always returned 500 — no admin could
+// ever reset a password through it.
+//
+// /admin/reset-password went with it: admin.resetPasswordToken was only ever
+// issued by the route above, so nothing could produce a valid token and the
+// endpoint was unreachable.
+//
+// Logged-in admins can still change their password via /admin/change-password
+// below. The separate user-facing reset flow is unaffected — it sends through
+// Resend and works.
 
 // Change Password Route (requires auth)
 app.post('/admin/change-password', authenticateAdmin, async (req, res) => {

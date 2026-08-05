@@ -660,11 +660,6 @@
                     <div class="error-message" id="password-error"></div>
                 </div>
                 
-                <div class="form-options">
-                    <span></span>
-                    <a href="#" class="text-link" id="forgotPasswordLink">Forgot password?</a>
-                </div>
-                
                 <button type="submit" class="btn btn-primary" id="loginBtn">
                     <span class="btn-text">Sign In</span>
                     <span class="btn-loader">
@@ -677,36 +672,6 @@
                 <div class="auth-footer">
                     <p>Need assistance? <a href="#" class="text-link">Contact Support</a></p>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Forgot Password Modal -->
-    <div class="modal" id="forgotPasswordModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Reset Password</h3>
-                <button class="close-modal">&times;</button>
-            </div>
-            <form id="forgotPasswordForm">
-                <div class="input-group">
-                    <label for="email">Email Address <span class="required">*</span></label>
-                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
-                    <div class="input-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
-                        </svg>
-                    </div>
-                    <div class="error-message" id="email-error"></div>
-                </div>
-                <button type="submit" class="btn btn-primary" id="resetBtn">
-                    <span class="btn-text">Send Reset Link</span>
-                    <span class="btn-loader">
-                        <svg viewBox="0 0 50 50" class="spinner">
-                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-                        </svg>
-                    </span>
-                </button>
             </form>
         </div>
     </div>
@@ -783,14 +748,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             // DOM Elements
             const loginForm = document.getElementById('adminLoginForm');
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            const forgotPasswordModal = document.getElementById('forgotPasswordModal');
-            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
             const changePasswordModal = document.getElementById('changePasswordModal');
             const changePasswordForm = document.getElementById('changePasswordForm');
             const closeModalButtons = document.querySelectorAll('.close-modal');
             const loginBtn = document.getElementById('loginBtn');
-            const resetBtn = document.getElementById('resetBtn');
             const changeBtn = document.getElementById('changeBtn');
 
             // Password toggle functionality with SVG icons
@@ -815,22 +776,13 @@
             });
 
             // Modal handling
-            forgotPasswordLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                forgotPasswordModal.style.display = 'flex';
-            });
-
             closeModalButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    forgotPasswordModal.style.display = 'none';
                     changePasswordModal.style.display = 'none';
                 });
             });
 
             window.addEventListener('click', function(e) {
-                if (e.target === forgotPasswordModal) {
-                    forgotPasswordModal.style.display = 'none';
-                }
                 if (e.target === changePasswordModal) {
                     changePasswordModal.style.display = 'none';
                 }
@@ -879,45 +831,6 @@
                     // Reset loading state
                     loginBtn.classList.remove('is-loading');
                     loginBtn.disabled = false;
-                }
-            });
-
-            // Forgot password form submission
-            forgotPasswordForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                const email = document.getElementById('email').value.trim();
-                document.getElementById('email-error').style.display = 'none';
-
-                // Show loading state
-                resetBtn.classList.add('is-loading');
-                resetBtn.disabled = true;
-
-                try {
-                    const response = await fetch(`${API_BASE_URL}/admin/forgot-password`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email })
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        alert('Password reset link sent to your email!');
-                        forgotPasswordModal.style.display = 'none';
-                    } else {
-                        document.getElementById('email-error').textContent = data.message;
-                        document.getElementById('email-error').style.display = 'block';
-                    }
-                } catch (error) {
-                    console.error('Forgot password error:', error);
-                    document.getElementById('email-error').textContent = 'Network error. Please try again.';
-                    document.getElementById('email-error').style.display = 'block';
-                } finally {
-                    // Reset loading state
-                    resetBtn.classList.remove('is-loading');
-                    resetBtn.disabled = false;
                 }
             });
 
