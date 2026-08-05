@@ -233,7 +233,7 @@ class AuthForms {
                     timer: 1500,
                     timerProgressBar: true,
                     willClose: () => {
-                        window.location.href = "welcome.html";
+                        window.location.href = "welcome";
                     }
                 });
             } else {
@@ -326,7 +326,7 @@ class AuthForms {
                     showConfirmButton: true,
                     confirmButtonText: 'Continue to Login your Account',
                     willClose: () => {
-                        window.location.href = "login.html";
+                        window.location.href = "login";
                     }
                 });
                 

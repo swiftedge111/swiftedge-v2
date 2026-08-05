@@ -82,7 +82,7 @@ document.getElementById('update-password-form').addEventListener('submit', async
         if (response.ok) {
             showToast('Password updated successfully! Redirecting to login…', 'success');
             // Keep button disabled and redirect after the toast is visible
-            setTimeout(() => { window.location.href = 'login.html'; }, 1800);
+            setTimeout(() => { window.location.href = 'login'; }, 1800);
         } else {
             showToast(data.message || 'Failed to reset password.', 'error');
             setLoading(submitBtn, false);

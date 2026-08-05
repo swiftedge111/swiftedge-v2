@@ -240,7 +240,7 @@ document.querySelector('.logout-btn').addEventListener('click', function(e) {
     }).then((result) => {
         if (result.isConfirmed) {
             localStorage.removeItem('authToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         }
     });
 });
@@ -1291,7 +1291,7 @@ function showSessionExpiredMessage() {
 
         document.getElementById('loginButton').addEventListener('click', () => {
             localStorage.removeItem('authToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         });
     }
 

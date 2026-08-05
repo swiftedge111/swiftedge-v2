@@ -32,9 +32,22 @@ app.use(cors({
     return callback(new Error(`Origin not allowed by CORS: ${origin}`));
   }
 }));
-// Serve static files from the frontend folder
+// Serve static files from the frontend folder.
+//
+// Clean URLs: "/login" serves login.html. This mirrors "cleanUrls": true in
+// frontend/vercel.json so local, Render and Vercel all resolve paths the same
+// way. Anything linking to a bare path keeps working on every environment.
+//
+// Requests that still carry .html are redirected to the extension-less form so
+// only one URL per page is reachable, matching Vercel's behaviour.
+app.get(/^\/(.+)\.html$/i, (req, res, next) => {
+  const clean = '/' + req.params[0];
+  if (req.originalUrl === clean) return next();
+  const query = req.originalUrl.slice(req.path.length);
+  res.redirect(308, clean + query);
+});
 
-app.use(express.static(path.join(__dirname, '../frontend')));
+app.use(express.static(path.join(__dirname, '../frontend'), { extensions: ['html'] }));
 
 // Route to serve home.html for the homepage
 
@@ -1508,7 +1521,7 @@ app.post('/request-reset', async (req, res) => {
       await user.save();
 
       // Generate reset link with query parameter
-      const resetLink = `https://broker.swiftedgetrade.com/update-password.html?token=${resetToken}`;
+      const resetLink = `https://broker.swiftedgetrade.com/update-password?token=${resetToken}`;
 
       // Send reset email with Resend
       await resend.emails.send({
@@ -1542,7 +1555,7 @@ app.get('/reset-password/:token', async (req, res) => {
       }
 
       // Redirect to the update password page
-      res.redirect(`/update-password.html?userId=${user._id}`);
+      res.redirect(`/update-password?userId=${user._id}`);
   } catch (error) {
       console.error('Error in /reset-password/:token:', error);
       res.status(500).send('Server error');
