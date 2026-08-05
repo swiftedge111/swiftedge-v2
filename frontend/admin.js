@@ -910,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Real brand logo (base64 data URI for reliable html2canvas capture),
         // with a graceful fallback to the file on disk.
-        const logoSrc = window.SWIFTEDGE_RECEIPT_LOGO || 'images/swi_logo.jpg';
+        const logoSrc = window.SWIFTEDGE_RECEIPT_LOGO || 'images/logo-mark.svg';
 
         // Layout is built with tables + inline styles so html2canvas renders it
         // pixel-perfectly in the downloaded PNG/PDF (no reliance on external CSS).
