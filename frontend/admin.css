@@ -2616,9 +2616,28 @@ button:hover {
   justify-content: center;
 }
 
+/* .btn-refresh is also defined earlier in this file. Every property that rule
+   sets on :hover is restated here so the final state is deterministic rather
+   than a half-merge of the two blocks — the earlier rule sets color:white,
+   which was landing on this light background and hiding the label. */
 .btn-refresh:hover, .btn-refresh-small:hover {
   background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.4);
+  color: #6d28d9;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+/* Spin only the icon, never the button itself. These buttons contain a text
+   label, and rotating the whole element turns the label upside down. */
+.btn-refresh:hover i,
+.btn-refresh-small:hover i {
   transform: rotate(180deg);
+}
+
+.btn-refresh i,
+.btn-refresh-small i {
+  transition: transform 0.3s ease;
 }
 
 /* Table Styles */
