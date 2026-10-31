@@ -1430,7 +1430,17 @@ async function loadTransactions(page = 1, filter = 'all') {
 
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to load transactions. Please try again.');
+        // A toast, not alert(): this runs on page load, and a native dialog
+        // freezes the whole dashboard until it's dismissed.
+        Swal.fire({
+            icon: 'error',
+            title: 'Failed to load transactions',
+            text: 'Please try again.',
+            timer: 5000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
     }
 }
 
