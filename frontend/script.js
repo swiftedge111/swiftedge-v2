@@ -53,6 +53,8 @@ class AuthForms {
         
         // Signup Form
         if (this.forms.signup) {
+            this.contactFields = ContactFields.init(this.forms.signup);
+            
             this.forms.signup.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 await this.handleSignup();
@@ -225,15 +227,18 @@ class AuthForms {
             
             if (response.ok) {
                 localStorage.setItem("authToken", result.token);
+                // Accounts created before phone and country were mandatory
+                // must add them before reaching the dashboard.
+                const needsProfile = result.profileComplete === false;
                 await Swal.fire({
                     icon: 'success',
                     title: 'Login Successful!',
-                    text: 'Redirecting to Welcome Page...',
+                    text: needsProfile ? 'Just a few details to complete your profile...' : 'Redirecting to Welcome Page...',
                     showConfirmButton: false,
                     timer: 1500,
                     timerProgressBar: true,
                     willClose: () => {
-                        window.location.href = "welcome";
+                        window.location.href = needsProfile ? "complete-profile" : "welcome";
                     }
                 });
             } else {
@@ -259,7 +264,7 @@ class AuthForms {
             username: form.querySelector('#signupUsername').value.trim().toLowerCase(),
             password: form.querySelector('#signupPassword').value,
             confirmPassword: form.querySelector('#confirmPassword').value,
-            phone: form.querySelector('#phone').value.trim(),
+            ...this.contactFields.getValues(),
             terms: form.querySelector('[name="terms"]').checked
         };
         
@@ -289,6 +294,12 @@ class AuthForms {
             return;
         }
         
+        const contactError = this.contactFields.validate();
+        if (contactError) {
+            this.showError(contactError);
+            return;
+        }
+
         if (formData.password !== formData.confirmPassword) {
             this.showError('Passwords do not match');
             return;

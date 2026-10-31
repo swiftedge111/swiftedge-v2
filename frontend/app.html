@@ -24,6 +24,10 @@
         <noscript> Powered by <a href=“https://www.smartsupp.com” target=“_blank”>Smartsupp</a></noscript>
     
   <title>Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.5/dist/css/intlTelInput.css">
+  <link rel="stylesheet" href="profile-fields.css">
+  <script src="apiConfig.js"></script>
+  <script src="profile-gate.js"></script>
  </head>
  <body>
     <!-- Sidebar/Menu (Moved to Right) -->
@@ -792,7 +796,7 @@
           </div>
 
           <!-- Profile Settings Card -->
-          <div class="settings-card">
+          <div class="settings-card" id="profile-settings">
             <div class="card-header">
               <i class="fas fa-user-edit"></i>
               <div>
@@ -807,7 +811,7 @@
                     <i class="fas fa-user"></i>
                     Full Name
                   </label>
-                  <input type="text" id="full-name" placeholder="Enter your full name">
+                  <input type="text" id="full-name" readonly>
                 </div>
 
                 <div class="form-group">
@@ -815,7 +819,20 @@
                     <i class="fas fa-envelope"></i>
                     Email Address
                   </label>
-                  <input type="email" id="email" placeholder="Enter your email">
+                  <input type="email" id="email" readonly>
+                </div>
+
+                <div class="form-group">
+                  <label for="profile-country">
+                    <i class="fas fa-globe"></i>
+                    Country
+                  </label>
+                  <div class="country-select" data-country-select>
+                    <input type="text" id="profile-country" class="country-select__input" autocomplete="off" placeholder="Select country" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="profile-country-list">
+                    <span class="country-select__icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
+                    <span class="country-select__flag" aria-hidden="true"></span>
+                    <ul class="country-select__list" id="profile-country-list" role="listbox" aria-label="Countries" hidden></ul>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -823,11 +840,25 @@
                     <i class="fas fa-phone"></i>
                     Phone Number
                   </label>
-                  <input type="text" id="phone" placeholder="Enter your phone number">
+                  <input type="tel" id="phone" data-phone="primary" autocomplete="tel">
+                </div>
+
+                <div class="form-group">
+                  <label for="profile-contact-phone">
+                    <i class="fab fa-whatsapp"></i>
+                    Contact Phone Number (WhatsApp / Telegram)
+                  </label>
+                  <div class="phone-action">
+                    <input type="tel" id="profile-contact-phone" data-phone="contact" autocomplete="tel">
+                    <button type="button" class="copy-phone-btn" data-copy-phone title="Same as phone number" aria-label="Same as phone number: copy your phone number into this field">
+                      <i class="far fa-copy" aria-hidden="true"></i>
+                      <span>Same as phone</span>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <button class="settings-btn primary">
+              <button type="button" class="settings-btn primary" id="update-profile-btn">
                 <i class="fas fa-user-check"></i>
                 <span>Update Profile</span>
               </button>
@@ -1432,7 +1463,8 @@
     </div>
   
     </div>
-    <script src="apiConfig.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@29.5.5/dist/js/intlTelInputWithUtils.min.js"></script>
+    <script src="profile-fields.js"></script>
     <script src="App.js"></script>
  </body>
  </html>

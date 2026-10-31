@@ -387,6 +387,9 @@ document.getElementById('search-btn').addEventListener('click', async () => {
         document.getElementById('user-name').textContent = user.fullName || 'N/A';
         document.getElementById('user-username').textContent = user.username || 'N/A';
         document.getElementById('user-email').textContent = user.email || 'N/A';
+        document.getElementById('user-phone').textContent = user.phone || 'N/A';
+        document.getElementById('user-country').textContent = user.country || 'N/A';
+        document.getElementById('user-contact-phone').textContent = user.contactPhone || 'N/A';
         document.getElementById('user-uid').textContent = user.uid || 'N/A';
         
         // Display Status with color

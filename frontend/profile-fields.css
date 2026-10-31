@@ -1,0 +1,329 @@
+/* Country picker and phone inputs from profile-fields.js. Matches the auth
+   form inputs in styles.css (.input-group) and the Settings card in App.css
+   (.form-group). Load after intl-tel-input's stylesheet and the page's own. */
+
+:root {
+    --iti-border-color: #e9ecef;
+    --iti-hover-color: rgba(67, 97, 238, 0.08);
+    --iti-icon-color: #6c757d;
+    --iti-spacer-horizontal: 12px;
+}
+
+/* Phone fields take the full row of the two-column signup grid: the contact
+   label is too long for half of it. */
+.input-grid > .input-group--wide {
+    grid-column: 1 / -1;
+}
+
+/* ---------- Phone inputs (intl-tel-input) ---------- */
+
+.iti {
+    display: block;
+    width: 100%;
+}
+
+/* App.css doesn't size inputs, and an unsized input takes its intrinsic
+   width, which grows with padding and overflows the field. */
+.iti input.iti__tel-input {
+    width: 100%;
+}
+
+.iti__country-container {
+    padding: 2px;
+}
+
+.iti__selected-country {
+    border-radius: 8px 0 0 8px;
+}
+
+.iti__selected-country-primary {
+    padding: 0 6px 0 14px;
+    border-radius: 8px 0 0 8px;
+}
+
+.iti__selected-dial-code {
+    margin-left: 8px;
+    font-size: 0.9375rem;
+    color: #2b2d42;
+    font-weight: 500;
+}
+
+.form-group .iti__selected-dial-code {
+    font-size: 1rem;
+}
+
+/* The dropdown is mounted on <body> (dropdownParent) to escape overflow: hidden. */
+.iti--detached-country-selector .iti__country-selector,
+.iti--fullscreen-popup .iti__country-selector {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.9rem;
+    color: #2b2d42;
+}
+
+.iti--inline-country-selector .iti__country-selector {
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+}
+
+.iti__search-input {
+    height: 44px;
+    font: inherit;
+    color: inherit;
+}
+
+.iti__search-input:focus {
+    outline: none;
+}
+
+.iti__country {
+    padding-top: 9px;
+    padding-bottom: 9px;
+}
+
+.iti__dial-code {
+    color: #6c757d;
+}
+
+/* ---------- Country picker ---------- */
+
+.country-select {
+    position: relative;
+}
+
+.country-select input.country-select__input {
+    width: 100%;
+    padding-left: 3rem;
+    padding-right: 2.75rem;
+    cursor: pointer;
+    text-overflow: ellipsis;
+}
+
+.country-select.is-open input.country-select__input {
+    cursor: text;
+}
+
+.country-select__icon,
+.country-select__flag {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.country-select__icon {
+    display: flex;
+    color: #6c757d;
+}
+
+.country-select__icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.country-select__icon .fas {
+    color: #9ca3af;
+}
+
+.country-select.has-country .country-select__icon,
+.country-select:not(.has-country) .country-select__flag {
+    display: none;
+}
+
+/* Chevron, drawn like the one on the phone fields. */
+.country-select::after {
+    content: '';
+    position: absolute;
+    right: 1.1rem;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -5px;
+    border-right: 1.5px solid #6c757d;
+    border-bottom: 1.5px solid #6c757d;
+    transform: rotate(45deg);
+    pointer-events: none;
+    transition: transform 0.2s ease, margin-top 0.2s ease;
+}
+
+.country-select.is-open::after {
+    margin-top: -1px;
+    transform: rotate(-135deg);
+}
+
+.country-select__list {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+    max-height: 264px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    -webkit-overflow-scrolling: touch;
+}
+
+.country-select__list[hidden] {
+    display: none;
+}
+
+.country-select__option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #2b2d42;
+    cursor: pointer;
+}
+
+.country-select__option.is-active {
+    background: rgba(67, 97, 238, 0.08);
+}
+
+.country-select__option[aria-selected="true"] {
+    color: #4361ee;
+    font-weight: 600;
+}
+
+.country-select__option .iti__flag {
+    flex-shrink: 0;
+}
+
+.country-select__name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.country-select__dial {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.country-select__empty {
+    padding: 18px 10px;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* ---------- "Same as phone" button inside the contact field ---------- */
+
+.phone-action {
+    position: relative;
+}
+
+.phone-action input.iti__tel-input {
+    padding-right: 9rem;
+}
+
+.copy-phone-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 6px;
+    background: rgba(67, 97, 238, 0.1);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #4361ee;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.copy-phone-btn:hover {
+    background: rgba(67, 97, 238, 0.18);
+}
+
+.copy-phone-btn:focus-visible {
+    outline: 2px solid #4361ee;
+    outline-offset: 2px;
+}
+
+.copy-phone-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Narrow phones: icon only, so the number keeps its room. */
+@media (max-width: 400px) {
+    .copy-phone-btn span {
+        display: none;
+    }
+
+    .phone-action input.iti__tel-input {
+        padding-right: 3.25rem;
+    }
+}
+
+/* ---------- Settings card (App.css .form-group) ---------- */
+
+.form-group .copy-phone-btn {
+    background: rgba(124, 58, 237, 0.1);
+    color: #7c3aed;
+}
+
+.form-group .copy-phone-btn:hover {
+    background: rgba(124, 58, 237, 0.18);
+}
+
+/* Settings columns are narrow: icon only, so the number isn't cut off. */
+.form-group .copy-phone-btn span {
+    display: none;
+}
+
+.form-group .phone-action input.iti__tel-input {
+    padding-right: 3.25rem;
+}
+
+.form-group .country-select__option[aria-selected="true"] {
+    color: #7c3aed;
+}
+
+.form-group.input-error input {
+    border-color: #ef233c;
+    box-shadow: 0 0 0 3px rgba(239, 35, 60, 0.1);
+}
+
+#profile-settings .form-group input[readonly] {
+    background: #f8fafc;
+    color: #64748b;
+    cursor: default;
+}
+
+/* The contact label wraps onto two lines; line the inputs up regardless. */
+#profile-settings .form-grid {
+    align-items: end;
+}
+
+/* The profile card clips its children; let the country list hang below it. */
+.settings-card:has(.country-select) {
+    overflow: visible;
+}
+
+.settings-card:has(.country-select) .card-header {
+    border-radius: 20px 20px 0 0;
+}

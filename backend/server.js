@@ -11,6 +11,9 @@ const crypto = require('crypto');
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
 const cron = require('node-cron');
+// The "max" metadata validates the digits themselves, not just the length,
+// matching the browser-side check in frontend/profile-fields.js.
+const { parsePhoneNumberFromString, getCountries } = require('libphonenumber-js/max');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); 
 const app = express();
 
@@ -118,7 +121,14 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    phone: { type: String },
+    // Contact details are required for every account, but enforced in the
+    // routes (validateContactDetails) rather than here: accounts created
+    // before they were mandatory lack them, and /login saves the user on every
+    // login, so a schema-level `required` would lock those users out.
+    phone: { type: String },            // E.164, e.g. +2348012345678
+    country: { type: String },          // English name, e.g. Nigeria
+    countryCode: { type: String },      // ISO 3166-1 alpha-2, e.g. NG
+    contactPhone: { type: String },     // WhatsApp / Telegram number, E.164
     lastLogin: {type: String, default: null},
     status: {type: String, default: "Inactive"}, 
     uid: { type: String, required: true, unique: true },
@@ -139,6 +149,73 @@ const UserSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', UserSchema);
+
+// ==================== CONTACT DETAILS ====================
+
+const SUPPORTED_COUNTRIES = new Set(getCountries());
+const ALLOWED_PHONE_TYPES = ['MOBILE', 'FIXED_LINE', 'FIXED_LINE_OR_MOBILE'];
+const countryNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+function isProfileComplete(user) {
+    return Boolean(user.phone && user.countryCode && user.contactPhone);
+}
+
+// Returns the E.164 form of a real mobile or landline number, or null.
+function normalizePhone(value) {
+    if (typeof value !== 'string' || !value.trim()) return null;
+    const parsed = parsePhoneNumberFromString(value.trim());
+    if (!parsed || !parsed.isValid() || !ALLOWED_PHONE_TYPES.includes(parsed.getType())) {
+        return null;
+    }
+    return parsed.number;
+}
+
+// Shared by signup, the complete-profile page and Settings so the rules live
+// in one place. Returns { values } on success or { error } with a message
+// safe to show the user. Pass the user's own id as excludeUserId when
+// updating, so keeping their current number isn't reported as a duplicate.
+async function validateContactDetails({ phone, countryCode, contactPhone }, excludeUserId) {
+    const code = typeof countryCode === 'string' ? countryCode.trim().toUpperCase() : '';
+    if (!code) {
+        return { error: 'Please select your country' };
+    }
+    if (!SUPPORTED_COUNTRIES.has(code)) {
+        return { error: 'Please select a valid country from the list' };
+    }
+
+    if (!phone) {
+        return { error: 'Phone number is required' };
+    }
+    const normalizedPhone = normalizePhone(phone);
+    if (!normalizedPhone) {
+        return { error: 'Please enter a valid phone number' };
+    }
+
+    if (!contactPhone) {
+        return { error: 'Contact phone number (WhatsApp / Telegram) is required' };
+    }
+    const normalizedContact = normalizePhone(contactPhone);
+    if (!normalizedContact) {
+        return { error: 'Please enter a valid WhatsApp / Telegram contact number' };
+    }
+
+    const phoneTaken = await User.exists({
+        phone: normalizedPhone,
+        ...(excludeUserId && { _id: { $ne: excludeUserId } })
+    });
+    if (phoneTaken) {
+        return { error: 'This phone number is already linked to another account' };
+    }
+
+    return {
+        values: {
+            phone: normalizedPhone,
+            country: countryNames.of(code),
+            countryCode: code,
+            contactPhone: normalizedContact
+        }
+    };
+}
 
 // Profit Schema
 const ProfitSchema = new mongoose.Schema({
@@ -306,7 +383,7 @@ app.get('/admin/search-user/:uid', authenticateJWT, async (req, res) => {
   try {
     const { uid } = req.params;
     
-    const user = await User.findOne({ uid }).select('fullName email username uid status totalBalance totalProfit holdingBalance');
+    const user = await User.findOne({ uid }).select('fullName email username uid status totalBalance totalProfit holdingBalance phone country contactPhone');
     
     if (!user) {
       return res.status(404).json({
@@ -328,6 +405,9 @@ app.get('/admin/search-user/:uid', authenticateJWT, async (req, res) => {
         username: updatedUser.username,
         uid: updatedUser.uid,
         status: updatedUser.status,
+        phone: user.phone || '',
+        country: user.country || '',
+        contactPhone: user.contactPhone || '',
         holdingBalance: updatedUser.holdingBalance || 0,
         totalProfit: updatedUser.totalProfit || 0,
         totalBalance: updatedUser.totalBalance || 0
@@ -858,7 +938,11 @@ function getPlainTextWelcomeEmail(user) {
 // User sign up and login routes...
 
 app.post('/signup', async (req, res) => {
-    const { fullName, email, username, password, phone } = req.body;
+    const { fullName, email, username, password, phone, countryCode, contactPhone } = req.body;
+
+    if (!fullName || !email || !username || !password) {
+        return res.status(400).json({ message: 'Please fill in all required fields' });
+    }
 
     try {
         const lowerEmail = email.toLowerCase();
@@ -886,6 +970,11 @@ app.post('/signup', async (req, res) => {
             }
         }
 
+        const contact = await validateContactDetails({ phone, countryCode, contactPhone });
+        if (contact.error) {
+            return res.status(400).json({ message: contact.error });
+        }
+
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -898,7 +987,7 @@ app.post('/signup', async (req, res) => {
             email: lowerEmail, 
             username: lowerUsername, 
             password: hashedPassword, 
-            phone,
+            ...contact.values,
             uid,  
             balance: 0,  
             holdings: []  
@@ -995,6 +1084,7 @@ app.post('/login', async (req, res) => {
           username: user.username,
           fullName: user.fullName,
           email: user.email,
+          profileComplete: isProfileComplete(user),
           message: 'Login successful'
       });
   } catch (error) {
@@ -1023,7 +1113,7 @@ app.get('/user-info', async (req, res) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
         // Fetch the user based on the decoded user ID
-        const user = await User.findById(decoded.id).select('username uid status lastLogin');
+        const user = await User.findById(decoded.id).select('fullName email username uid status lastLogin phone country countryCode contactPhone');
         
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -1031,14 +1121,50 @@ app.get('/user-info', async (req, res) => {
 
         // Respond with user information
         res.json({
+            fullName: user.fullName,
+            email: user.email,
             username: user.username,
             uid: user.uid,
             status: user.status,
             lastLogin: user.lastLogin,
+            phone: user.phone || '',
+            country: user.country || '',
+            countryCode: user.countryCode || '',
+            contactPhone: user.contactPhone || '',
+            profileComplete: isProfileComplete(user),
         });
     } catch (error) {
         console.error("Error fetching user info:", error);
         res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Save phone, country and WhatsApp/Telegram contact number. Used by the
+// complete-profile page (accounts created before these were mandatory) and
+// by the profile card in Settings.
+app.put('/profile/contact', authenticateJWT, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const contact = await validateContactDetails(req.body, user._id);
+        if (contact.error) {
+            return res.status(400).json({ message: contact.error });
+        }
+
+        Object.assign(user, contact.values);
+        await user.save();
+
+        res.json({
+            message: 'Contact details saved',
+            ...contact.values,
+            profileComplete: true
+        });
+    } catch (error) {
+        console.error('Error saving contact details:', error);
+        res.status(500).json({ message: 'Could not save your details. Please try again.' });
     }
 });
 
@@ -2043,6 +2169,14 @@ app.post('/api/withdraw', authenticateJWT, async (req, res) => {
                 error: 'User not found',
                 userId: userId,
                 suggestion: 'Check if user exists in database'
+            });
+        }
+
+        if (!isProfileComplete(user)) {
+            return res.status(403).json({
+                success: false,
+                code: 'PROFILE_INCOMPLETE',
+                error: 'Please complete your profile before making a withdrawal'
             });
         }
 

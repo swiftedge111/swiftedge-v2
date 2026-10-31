@@ -275,8 +275,70 @@ async function updateSidebarUserInfo() {
     }
 }
 
+// Settings > Profile Information. Name and email are shown read-only; phone,
+// country and the WhatsApp/Telegram contact number can be changed here.
+// Prefilled by fetchUserInfo() once /user-info has loaded.
+let profileFields = null;
+
+function setupProfileSettings() {
+    const card = document.getElementById('profile-settings');
+    if (!card) return;
+
+    profileFields = ContactFields.init(card);
+    const saveBtn = document.getElementById('update-profile-btn');
+
+    saveBtn.addEventListener('click', async () => {
+        const problem = profileFields.validate();
+        if (problem) {
+            Swal.fire({ icon: 'error', title: 'Error', text: problem, confirmButtonColor: '#4361ee' });
+            return;
+        }
+
+        const originalHTML = saveBtn.innerHTML;
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Saving...</span>';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/profile/contact`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                },
+                body: JSON.stringify(profileFields.getValues())
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || 'Could not update your profile');
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated',
+                text: 'Your contact details have been saved.',
+                confirmButtonColor: '#4361ee'
+            });
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            Swal.fire({ icon: 'error', title: 'Update Failed', text: error.message, confirmButtonColor: '#4361ee' });
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalHTML;
+        }
+    });
+}
+
+function fillProfileSettings(user) {
+    if (!profileFields) return;
+    document.getElementById('full-name').value = user.fullName || '';
+    document.getElementById('email').value = user.email || '';
+    profileFields.setValues(user);
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    setupProfileSettings();
+
     // Close sidebar when clicking on menu items (mobile)
     const menuItems = document.querySelectorAll('.sidebar-menu a');
     menuItems.forEach(item => {
@@ -559,6 +621,8 @@ async function fetchUserInfo() {
       if (uidEl) uidEl.innerText = data.uid;
       if (statusEl) statusEl.innerText = data.status;
       if (lastLoginEl) lastLoginEl.innerText = data.lastLogin || 'N/A';
+
+      fillProfileSettings(data);
 
   } catch (error) {
       console.error('Error fetching user info:', error);
@@ -1707,6 +1771,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (!withdrawalResponse.ok) {
+                if (withdrawalResponseData.code === 'PROFILE_INCOMPLETE') {
+                    setTimeout(() => window.location.href = 'complete-profile', 2500);
+                }
                 // Handle specific "User not found" error
                 if (withdrawalResponse.status === 404 && withdrawalResponseData.error?.includes('User not found')) {
                     localStorage.removeItem('authToken');
