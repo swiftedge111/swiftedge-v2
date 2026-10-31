@@ -363,6 +363,39 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// Where the user signed up and logs in from. Times are shown in this
+// browser's time zone; built with textContent since IPs and devices come
+// from request headers.
+function showAccessDetails(user) {
+    const when = (value) => (value ? new Date(value).toLocaleString(undefined, {
+        day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    }) : '');
+    const place = (ip, country) => [ip, country && `(${country})`].filter(Boolean).join(' ');
+
+    const lastLogin = [when(user.lastLogin), place(user.lastLoginIp, user.lastLoginCountry)].filter(Boolean);
+    document.getElementById('user-last-login').textContent = lastLogin.length ? lastLogin.join(' from ') : 'N/A';
+    document.getElementById('user-signup-from').textContent = place(user.signupIp, user.signupCountry) || 'N/A';
+
+    const list = document.getElementById('user-recent-logins');
+    list.replaceChildren();
+    const logins = user.recentLogins || [];
+    if (logins.length === 0) {
+        const item = document.createElement('li');
+        item.textContent = 'No logins recorded yet';
+        list.appendChild(item);
+        return;
+    }
+    logins.forEach(login => {
+        const item = document.createElement('li');
+        item.textContent = `${when(login.at)}${login.type === 'signup' ? ' (signup)' : ''}`;
+        const meta = document.createElement('span');
+        meta.className = 'login-meta';
+        meta.textContent = [place(login.ip, login.country), login.device].filter(Boolean).join(' · ');
+        item.appendChild(meta);
+        list.appendChild(item);
+    });
+}
+
 // Fetch and Display User Data
 document.getElementById('search-btn').addEventListener('click', async () => {
     const uid = document.getElementById('uid-search').value.trim();
@@ -391,6 +424,7 @@ document.getElementById('search-btn').addEventListener('click', async () => {
         document.getElementById('user-country').textContent = user.country || 'N/A';
         document.getElementById('user-contact-phone').textContent = user.contactPhone || 'N/A';
         document.getElementById('user-uid').textContent = user.uid || 'N/A';
+        showAccessDetails(user);
         
         // Display Status with color
         const statusElement = document.getElementById('user-status');

@@ -14,6 +14,9 @@ const cron = require('node-cron');
 // The "max" metadata validates the digits themselves, not just the length,
 // matching the browser-side check in frontend/profile-fields.js.
 const { parsePhoneNumberFromString, getCountries } = require('libphonenumber-js/max');
+const net = require('net');
+const maxmind = require('maxmind');
+const { describeDevice } = require('./device');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args)); 
 const app = express();
 
@@ -129,6 +132,10 @@ const UserSchema = new mongoose.Schema({
     country: { type: String },          // English name, e.g. Nigeria
     countryCode: { type: String },      // ISO 3166-1 alpha-2, e.g. NG
     contactPhone: { type: String },     // WhatsApp / Telegram number, E.164
+    signupIp: { type: String },
+    signupCountry: { type: String },    // ISO-2 country of signupIp
+    lastLoginIp: { type: String },
+    lastLoginCountry: { type: String }, // ISO-2 country of lastLoginIp
     lastLogin: {type: String, default: null},
     status: {type: String, default: "Inactive"}, 
     uid: { type: String, required: true, unique: true },
@@ -223,6 +230,72 @@ async function validateContactDetails({ phone, countryCode, contactPhone }, excl
             contactPhone: normalizedContact
         }
     };
+}
+
+// ==================== LOGIN HISTORY ====================
+
+// Offline IP-to-country lookup, so visitors' IPs aren't sent to a third
+// party. Data: NRO statistics via ip-location-db, CC BY 4.0 (credited to
+// nro.net in the admin panel, where the countries are shown).
+const geoDb = maxmind
+    .open(path.join(path.dirname(require.resolve('@ip-location-db/geo-whois-asn-country-mmdb/package.json')), 'geo-whois-asn-country.mmdb'))
+    .catch((error) => {
+        console.error('IP country database failed to load:', error.message);
+        return null;
+    });
+
+async function ipCountry(ip) {
+    try {
+        const db = await geoDb;
+        return db?.get(ip)?.country_code || '';
+    } catch {
+        return '';
+    }
+}
+
+// The browser's IP. Render's proxy passes it as the first X-Forwarded-For
+// entry, but a client can prepend its own entries, and Render's exact chain
+// isn't documented. So the raw chain is stored alongside, to check later
+// which entry is the trustworthy one.
+function clientIp(req) {
+    const first = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+    for (const candidate of [first, req.socket.remoteAddress || '']) {
+        const ip = candidate.replace(/^::ffff:/, '');
+        if (net.isIP(ip)) return ip;
+    }
+    return '';
+}
+
+async function accessDetails(req) {
+    const ip = clientIp(req);
+    return {
+        ip,
+        country: ip ? await ipCountry(ip) : '',
+        forwardedFor: String(req.headers['x-forwarded-for'] || '').slice(0, 300),
+        userAgent: String(req.headers['user-agent'] || '').slice(0, 400)
+    };
+}
+
+// One small record per signup or login (a few hundred bytes), so incidents
+// can be traced even after later logins overwrite lastLogin.
+const LoginEventSchema = new mongoose.Schema({
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
+    uid: { type: String },
+    type: { type: String, enum: ['signup', 'login'] },
+    ip: { type: String },
+    country: { type: String },          // ISO-2 country of ip, '' if unknown
+    forwardedFor: { type: String },     // raw X-Forwarded-For chain
+    userAgent: { type: String },
+    // MongoDB deletes each record a year after it's written (TTL index).
+    createdAt: { type: Date, default: Date.now, expires: 60 * 60 * 24 * 365 }
+});
+
+const LoginEvent = mongoose.model('LoginEvent', LoginEventSchema);
+
+// Never fails the request: a logging problem mustn't stop anyone logging in.
+function recordAccess(user, type, access) {
+    LoginEvent.create({ userId: user._id, uid: user.uid, type, ...access })
+        .catch((error) => console.error('Could not record login event:', error.message));
 }
 
 // Profit Schema
@@ -391,7 +464,7 @@ app.get('/admin/search-user/:uid', authenticateJWT, authenticateAdmin, async (re
   try {
     const { uid } = req.params;
     
-    const user = await User.findOne({ uid }).select('fullName email username uid status totalBalance totalProfit holdingBalance phone country contactPhone');
+    const user = await User.findOne({ uid }).select('fullName email username uid status totalBalance totalProfit holdingBalance phone country contactPhone lastLogin lastLoginIp lastLoginCountry signupIp signupCountry');
     
     if (!user) {
       return res.status(404).json({
@@ -402,6 +475,12 @@ app.get('/admin/search-user/:uid', authenticateJWT, authenticateAdmin, async (re
     
     // Calculate user's current balances
     const updatedUser = await updateUserBalances(user._id);
+
+    const countryName = (code) => (code ? countryNames.of(code) : '');
+    const recentLogins = await LoginEvent.find({ userId: user._id })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
     
     // Return the user data
     res.json({
@@ -416,6 +495,18 @@ app.get('/admin/search-user/:uid', authenticateJWT, authenticateAdmin, async (re
         phone: user.phone || '',
         country: user.country || '',
         contactPhone: user.contactPhone || '',
+        lastLogin: user.lastLogin || '',
+        lastLoginIp: user.lastLoginIp || '',
+        lastLoginCountry: countryName(user.lastLoginCountry),
+        signupIp: user.signupIp || '',
+        signupCountry: countryName(user.signupCountry),
+        recentLogins: recentLogins.map(event => ({
+          type: event.type,
+          at: event.createdAt,
+          ip: event.ip || '',
+          country: countryName(event.country),
+          device: describeDevice(event.userAgent)
+        })),
         holdingBalance: updatedUser.holdingBalance || 0,
         totalProfit: updatedUser.totalProfit || 0,
         totalBalance: updatedUser.totalBalance || 0
@@ -983,6 +1074,8 @@ app.post('/signup', async (req, res) => {
             return res.status(400).json({ message: contact.error });
         }
 
+        const access = await accessDetails(req);
+
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -996,12 +1089,16 @@ app.post('/signup', async (req, res) => {
             username: lowerUsername, 
             password: hashedPassword, 
             ...contact.values,
-            uid,  
+            signupIp: access.ip,
+            signupCountry: access.country,
+            uid,
             balance: 0,  
             holdings: []  
         });
         
         await user.save();
+
+        recordAccess(user, 'signup', access);
 
         // Send welcome email
         sendWelcomeEmail(user).catch(console.error);
@@ -1080,9 +1177,14 @@ app.post('/login', async (req, res) => {
           });
       }
 
+      const access = await accessDetails(req);
+
       user.status = 'Active';
       user.lastLogin = new Date().toISOString();
+      user.lastLoginIp = access.ip;
+      user.lastLoginCountry = access.country;
       await user.save();
+      recordAccess(user, 'login', access);
 
       // Create JWT token
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '5h' });
