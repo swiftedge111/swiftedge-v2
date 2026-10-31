@@ -156,8 +156,16 @@ const SUPPORTED_COUNTRIES = new Set(getCountries());
 const ALLOWED_PHONE_TYPES = ['MOBILE', 'FIXED_LINE', 'FIXED_LINE_OR_MOBILE'];
 const countryNames = new Intl.DisplayNames(['en'], { type: 'region' });
 
+// Complete means a country plus phone and contact numbers stored as valid
+// international numbers. Older accounts hold numbers like "0803..." with no
+// country code; those can't be traced to a country, so they count as
+// incomplete and the owner is sent to the complete-profile page to fix them.
 function isProfileComplete(user) {
-    return Boolean(user.phone && user.countryCode && user.contactPhone);
+    return Boolean(
+        user.countryCode &&
+        user.phone && normalizePhone(user.phone) === user.phone &&
+        user.contactPhone && normalizePhone(user.contactPhone) === user.contactPhone
+    );
 }
 
 // Returns the E.164 form of a real mobile or landline number, or null.
