@@ -379,7 +379,7 @@ async function updateUserBalances(userId) {
 // ==================== PROFIT SYSTEM ENDPOINTS ====================
 
 // 1. Search user by UID (reuse existing logic) - FIXED VERSION
-app.get('/admin/search-user/:uid', authenticateJWT, async (req, res) => {
+app.get('/admin/search-user/:uid', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const { uid } = req.params;
     
@@ -424,7 +424,7 @@ app.get('/admin/search-user/:uid', authenticateJWT, async (req, res) => {
 });
 
 // 2. Add profit to user
-app.post('/admin/add-profit', authenticateJWT, async (req, res) => {
+app.post('/admin/add-profit', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const { uid, amount, description } = req.body;
     
@@ -523,7 +523,7 @@ app.post('/admin/add-profit', authenticateJWT, async (req, res) => {
 });
 
 // 3. Get user profit history
-app.get('/admin/user-profits/:uid', authenticateJWT, async (req, res) => {
+app.get('/admin/user-profits/:uid', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const { uid } = req.params;
     const { page = 1, limit = 20, startDate, endDate } = req.query;
@@ -598,7 +598,7 @@ app.get('/admin/user-profits/:uid', authenticateJWT, async (req, res) => {
 });
 
 // 4. Get all profits (admin dashboard)
-app.get('/admin/all-profits', authenticateJWT, async (req, res) => {
+app.get('/admin/all-profits', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 50, uid, startDate, endDate } = req.query;
     
@@ -669,7 +669,7 @@ app.get('/admin/all-profits', authenticateJWT, async (req, res) => {
 
 
 // Fetch Bank Transfer Data
-app.get('/admin/deposit/bank-transfer', authenticateJWT, async (req, res) => {
+app.get('/admin/deposit/bank-transfer', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const deposit = await Deposit.findOne({ method: 'bank-transfer' });
     res.json(deposit || {});
@@ -680,7 +680,7 @@ app.get('/admin/deposit/bank-transfer', authenticateJWT, async (req, res) => {
 });
 
 // Save Bank Transfer Data
-app.post('/admin/deposit/bank-transfer', authenticateJWT, async (req, res) => {
+app.post('/admin/deposit/bank-transfer', authenticateJWT, authenticateAdmin, async (req, res) => {
   const { bankName, routingNumber, accountNumber, accountName, swiftCode } = req.body;
   try {
     let deposit = await Deposit.findOneAndUpdate(
@@ -706,7 +706,7 @@ app.post('/admin/deposit/bank-transfer', authenticateJWT, async (req, res) => {
 
 
 // Fetch Cryptocurrency Data
-app.get('/admin/deposit/crypto', authenticateJWT, async (req, res) => {
+app.get('/admin/deposit/crypto', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const deposit = await Deposit.findOne({ method: 'crypto' });
     res.json(deposit?.cryptoDetails || []);
@@ -718,7 +718,7 @@ app.get('/admin/deposit/crypto', authenticateJWT, async (req, res) => {
 
 
 // Save Cryptocurrency Data
-app.post('/admin/deposit/crypto', authenticateJWT, async (req, res) => {
+app.post('/admin/deposit/crypto', authenticateJWT, authenticateAdmin, async (req, res) => {
   const { cryptocurrency, walletAddress, network } = req.body;
 
   try {
@@ -784,7 +784,7 @@ app.post('/admin/deposit/crypto', authenticateJWT, async (req, res) => {
 
 
 // Fetch Digital Wallets Data
-app.get('/admin/deposit/digital-wallets', authenticateJWT, async (req, res) => {
+app.get('/admin/deposit/digital-wallets', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
     const deposit = await Deposit.findOne({ method: 'digital-wallets' });
     res.json(deposit?.digitalWalletDetails || []);
@@ -795,7 +795,7 @@ app.get('/admin/deposit/digital-wallets', authenticateJWT, async (req, res) => {
 });
 
 // Save Digital Wallet Data
-app.post('/admin/deposit/digital-wallets', authenticateJWT, async (req, res) => {
+app.post('/admin/deposit/digital-wallets', authenticateJWT, authenticateAdmin, async (req, res) => {
   const { walletType, walletUsername, walletInfo } = req.body;
 
   try {
@@ -1170,7 +1170,7 @@ app.put('/profile/contact', authenticateJWT, async (req, res) => {
 
 
 // Fetch Holdings for a User by UID
-app.get('/admin/user-holdings/:uid', authenticateJWT, async (req, res) => {
+app.get('/admin/user-holdings/:uid', authenticateJWT, authenticateAdmin, async (req, res) => {
     const { uid } = req.params;  
 
     try {
@@ -1196,7 +1196,7 @@ app.get('/admin/user-holdings/:uid', authenticateJWT, async (req, res) => {
 
 //Add holdings
 // FIXED version of add-holding endpoint
-app.post('/admin/add-holding', authenticateJWT, async (req, res) => {
+app.post('/admin/add-holding', authenticateJWT, authenticateAdmin, async (req, res) => {
     console.log('=== ADD HOLDING REQUEST START ===');
     console.log('Request body:', req.body);
     
@@ -1837,14 +1837,22 @@ function authenticateAdmin(req, res, next) {
         return res.status(401).json({ message: 'No token provided' });
     }
 
+    let decoded;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.admin = decoded;
-        next();
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
         console.error('Token verification error:', error);
-        res.status(401).json({ message: 'Invalid token' });
+        return res.status(401).json({ message: 'Invalid token' });
     }
+
+    // Customer tokens from /login are signed with the same secret, so a valid
+    // signature alone proves nothing. Only /admin/login issues the admin role.
+    if (decoded.role !== 'admin') {
+        return res.status(403).json({ message: 'Admin access required' });
+    }
+
+    req.admin = decoded;
+    next();
 }
 
 //Route to generate pin
@@ -1853,7 +1861,7 @@ const SALT_ROUNDS = 10;
 
 // Generate PIN API
 
-app.post('/admin/generate-pin', authenticateJWT, async (req, res) => {
+app.post('/admin/generate-pin', authenticateJWT, authenticateAdmin, async (req, res) => {
   const { pinLength, expirationTime } = req.body;
 
   console.log("===== BACKEND LOGS =====");
@@ -1970,7 +1978,7 @@ app.post('/verify-pin', async (req, res) => {
 });
 
 // Route to delete all pins
-app.delete('/admin/pins', authenticateJWT, async (req, res) => {
+app.delete('/admin/pins', authenticateJWT, authenticateAdmin, async (req, res) => {
   try {
       await Pin.deleteMany({}); // Delete all pins from the database
       res.status(200).json({ message: 'All pins have been successfully deleted.' });
