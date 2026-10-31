@@ -2416,59 +2416,6 @@ app.post('/api/admin/withdrawals/:id/process', authenticateJWT, authenticateAdmi
     }
 });
 
-// Debug email route - Add this to your server
-app.post('/debug-email', async (req, res) => {
-    const { email } = req.body;
-    
-    try {
-        console.log('=== DEBUG EMAIL START ===');
-        console.log('Testing email to:', email);
-        console.log('Resend API Key exists:', !!process.env.RESEND_API_KEY);
-        console.log('Domain: swiftedgetrade.com');
-        
-        const result = await resend.emails.send({
-            from: 'SwiftEdge Trade <noreply@swiftedgetrade.com>',
-            to: email,
-            subject: 'DEBUG: Test Email from SwiftEdge',
-            html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #007bff;">DEBUG Test Email</h2>
-                    <p>This is a test email to verify email functionality.</p>
-                    <p><strong>Time:</strong> ${new Date().toISOString()}</p>
-                    <p><strong>To:</strong> ${email}</p>
-                    <p><strong>From:</strong> no-reply@swiftedgetrade.com</p>
-                </div>
-            `
-        });
-        
-        console.log('✅ DEBUG: Email sent successfully');
-        console.log('Resend Response:', result);
-        console.log('=== DEBUG EMAIL END ===');
-        
-        res.json({ 
-            success: true, 
-            message: 'Debug email sent successfully',
-            result 
-        });
-        
-    } catch (error) {
-        console.error('❌ DEBUG: Email failed');
-        console.error('Error details:', {
-            message: error.message,
-            name: error.name,
-            code: error.code,
-            stack: error.stack
-        });
-        console.log('=== DEBUG EMAIL END ===');
-        
-        res.status(500).json({ 
-            success: false, 
-            error: error.message,
-            details: error 
-        });
-    }
-});
-
 // Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
