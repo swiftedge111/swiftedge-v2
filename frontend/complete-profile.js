@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch(`${API_BASE_URL}/user-info`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (response.status === 401) {
+            logout();
+            return;
+        }
         if (response.ok) {
             const user = await response.json();
             if (user.profileComplete) {

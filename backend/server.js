@@ -1244,6 +1244,11 @@ app.get('/user-info', async (req, res) => {
             profileComplete: isProfileComplete(user),
         });
     } catch (error) {
+        // Expired, tampered with, or signed with a previous JWT_SECRET: the
+        // pages treat 401 as "log in again".
+        if (error instanceof jwt.JsonWebTokenError) {
+            return res.status(401).json({ message: 'Session expired, please log in again' });
+        }
         console.error("Error fetching user info:", error);
         res.status(500).json({ message: 'Server error' });
     }
